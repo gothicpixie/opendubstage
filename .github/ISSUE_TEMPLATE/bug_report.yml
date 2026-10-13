@@ -1,0 +1,49 @@
+name: Bug report
+description: A tool crashes, mis-measures, or changes audio it should have left alone.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks. Please don't attach private or unreleased programme audio. A synthetic signal, a public-domain
+        clip, or a description of the signal (sample rate, length, what's in it) is enough for most bugs.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool
+      description: Which tool or module (for example `specrepair`, `qc`, `opendubstage.mix.carve`).
+      placeholder: qc
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command or code
+      description: The exact command line or the few lines of Python that reproduce it.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: Paste the traceback or the wrong numbers. If the output audio is wrong, say where in the file and how it sounds.
+    validations:
+      required: true
+  - type: textarea
+    id: signal
+    attributes:
+      label: Input signal
+      description: Sample rate, channels, bit depth, duration, how it was recorded, and whether the file is WAV or something ffmpeg decoded.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS, Python version, `pip show opendubstage` version, and `ffmpeg -version` first line if relevant.
+      placeholder: macOS 15, Python 3.12, opendubstage 0.1.0.dev0, ffmpeg 7.1

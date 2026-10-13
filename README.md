@@ -5,18 +5,66 @@
 [![ci](https://github.com/gothicpixie/opendubstage/actions/workflows/ci.yml/badge.svg)](https://github.com/gothicpixie/opendubstage/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 ![Python 3.10–3.13](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue.svg)
+[![Claude Code skills](https://img.shields.io/badge/Claude_Code_skills-8-d7a25d.svg)](skills/README.md)
+[![Cite](https://img.shields.io/badge/cite-CITATION.cff-lightgrey.svg)](CITATION.cff)
 
-**Open tools for documentary and film sound post-production.** These are offline, scriptable, testable versions of the
-moves a dialogue editor and a re-recording mixer make every day: spectral repair, EQ matching between voices,
-frequency-aware music ducking, J- and L-cuts, a broadcast-style QC pass, and restrained sound for still photographs.
+OpenDubStage is a set of command-line tools for sound post-production on documentaries, films, podcasts and radio.
+It covers the routine passes a dialogue editor and a re-recording mixer do by hand: dialogue repair and noise
+reduction, EQ matching between voices, music ducking keyed to speech, J- and L-cut transitions, loudness and
+true-peak QC to EBU R128 / ITU-R BS.1770, and restrained sound design for still photographs. It runs offline, on
+plain WAV files, and writes reports you can diff.
 
-Each tool is a small Python module that you can read in one sitting. It has a documented method, defaults with the
-reasoning behind them, synthetic tests, and a command line. The audio cores need only numpy, scipy and soundfile.
-Model-based backends are optional extras, and the test suite never downloads a model.
+It is for two kinds of people. Dialogue editors and mixers who want a scriptable, repeatable version of a step they
+already do in iZotope RX or a DAW, so a whole programme can be processed from word timings and checked afterwards. And
+developers building audio pipelines who want those steps with the reasoning written down: every default cites a
+delivery spec, a standard or a measurement, and every behaviour is pinned by a synthetic test.
+
+Each tool is a small Python module that you can read in one sitting. The audio cores need only numpy, scipy and
+soundfile. Model-based backends are optional extras, and the test suite never downloads a model.
 
 > **Status: alpha (0.1.0.dev0).** Every tool runs and is tested on synthetic signals. Interfaces may still change before 1.0.
 
-## Contents
+## Quickstart
+
+```bash
+git clone https://github.com/gothicpixie/opendubstage.git && cd opendubstage
+pip install -e ".[dev]"                      # Python >= 3.10; ffmpeg on PATH for some tools
+opendubstage qc mix.wav --md qc.md           # loudness, true peak, LRA, dead air, clicks, masking
+```
+
+`opendubstage --help` lists the tools. See [Command line](#command-line) for one example of each.
+
+## What's in the box
+
+| Tool | One line | Command |
+|---|---|---|
+| Spectral repair | Fill coughs, thumps and handling noise with the recording's own room tone; attenuate events under speech | `opendubstage specrepair` |
+| De-rumble | Take car rumble and room boom out of a voice memo without touching the voice above 400 Hz | `opendubstage memofix` |
+| Dialogue EQ match | Match one voice's long-term spectrum to another's with a gain-limited EQ, emitted as an `ffmpeg` filter chain | `opendubstage ltasmatch` |
+| Music carve | Dip the music's 1–4 kHz band while someone speaks; bring music up in the gaps (posts); end cues on a phrase | `opendubstage carve` |
+| Transitions | J-cuts, L-cuts and equal-power crossfades at chapter boundaries, on a cue sheet, without moving sync | `opendubstage transitions` |
+| Mix QC | BS.1770-4 integrated loudness, true peak, LRA, dead air, clicks at edits, voice level jumps, music masking speech | `opendubstage qc` |
+| Foley for stills | Propose and place sound for photographs and archive under documentary rules; output is an auditable cue sheet | `opendubstage foley` |
+| Agent skills | Eight Claude Code skills that carry the same rules into an editing session | [`skills/`](skills/README.md) |
+
+## How this relates to iZotope RX, Auphonic and pyloudnorm
+
+- **iZotope RX** is a commercial, GUI-first restoration suite with many more modules (Dialogue Isolate, De-reverb,
+  De-click, Spectral De-noise and so on) and far more tuning behind each. `specrepair` covers one RX job, Spectral
+  Repair's Replace and Attenuate, from the command line, so you can run it over a programme from word timings and
+  diff the result. It is not a replacement for RX on a difficult track. It is the batchable, checkable version of the
+  routine pass.
+- **Auphonic** is a hosted service that levels, normalises loudness and reduces noise in one upload. OpenDubStage runs
+  offline, uploads nothing, and splits the work into separate steps with their parameters exposed. It has no dialogue
+  leveller yet; that is first on the [roadmap](ROADMAP.md).
+- **pyloudnorm** is a BS.1770 loudness meter and normaliser library. `qc` measures gated integrated loudness and true
+  peak the same way, then adds what a broadcast QC pass asks for on top: LRA, dead air, clicks at cue edges, level
+  jumps between voices and masking of speech in the presence band, with blocking and advisory checks kept separate.
+  If you only need a meter, use pyloudnorm.
+- **ffmpeg** is not replaced. `ltasmatch` emits `equalizer` filter chains for it, and `foley` and `transitions` use it
+  for decoding, probing and rendering.
+
+## Tools in detail
 
 | Package | Tool | What it does |
 |---|---|---|
@@ -47,7 +95,7 @@ Optional extras:
 
 | Extra | Pulls in | For |
 |---|---|---|
-| `dev` | pytest, hypothesis | the test suite |
+| `dev` | pytest, hypothesis, pyyaml | the test suite and the skills self-check |
 | `woosh` | torch, torchaudio, torchvision, Pillow | the local generative foley backend (installed from source; weights are **CC-BY-NC 4.0**, see [NOTICE](NOTICE)) |
 | `vision` | pyobjc-framework-Vision (macOS) | Apple Vision scene labels for foley |
 
@@ -128,6 +176,9 @@ CI runs the same target on Linux and macOS for Python 3.10, 3.11, 3.12 and 3.13,
 downloads. All test signals are synthetic. The only media in the repo are five public-domain photographs, listed in
 [examples/foley/public_domain/SOURCES.md](examples/foley/public_domain/SOURCES.md). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+Bug reports and proposals have [issue templates](.github/ISSUE_TEMPLATE); questions go in
+[Discussions](https://github.com/gothicpixie/opendubstage/discussions).
+
 ## Sources
 
 The defaults cite their sources in each module's docstring and in [docs/foley-rules.md](docs/foley-rules.md). The main
@@ -141,6 +192,11 @@ references are:
   (at least 10 LU over music and 15 LU over ambience).
 - Byrne et al., JASA 1994, "An international comparison of long-term average speech spectra".
 - Public-radio training material on scoring, posts and mixing checklists (NPR Training; Transom.org).
+
+## Citing
+
+If the tools or the rules were useful in a paper, a course or a production credit, [CITATION.cff](CITATION.cff) has the
+metadata; GitHub's "Cite this repository" button renders it as APA or BibTeX.
 
 ## Licence
 

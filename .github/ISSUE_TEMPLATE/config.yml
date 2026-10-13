@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question about using a tool
+    url: https://github.com/gothicpixie/opendubstage/discussions
+    about: Ask in Discussions; issues are for bugs and proposals.

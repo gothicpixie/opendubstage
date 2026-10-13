@@ -1,0 +1,65 @@
+cff-version: 1.2.0
+message: "If OpenDubStage helped a production, a paper or a course, please cite it with the metadata below."
+title: "OpenDubStage: open tools for documentary and film sound post-production"
+type: software
+authors:
+  - name: "The OpenDubStage contributors"
+repository-code: "https://github.com/gothicpixie/opendubstage"
+url: "https://github.com/gothicpixie/opendubstage"
+license: Apache-2.0
+version: 0.1.0.dev0
+date-released: "2026-10-13"
+keywords:
+  - audio post-production
+  - documentary sound
+  - dialogue editing
+  - spectral repair
+  - loudness
+  - EBU R128
+  - ITU-R BS.1770
+  - music ducking
+  - foley
+abstract: >-
+  Command-line and Python tools for sound post-production on documentaries, films, podcasts and radio:
+  spectral repair and de-rumble for dialogue, long-term-average-spectrum EQ matching between voices,
+  speech-keyed music ducking and posts, J- and L-cut transitions on a cue sheet, a broadcast-style mix QC
+  pass (BS.1770-4 integrated loudness, true peak, loudness range, dead air, clicks, level jumps, masking)
+  and rule-governed sound for still photographs. Every default cites a standard, a delivery specification
+  or a measurement, and every behaviour is pinned by a synthetic test.
+references:
+  - type: standard
+    title: "ITU-R BS.1770-4: Algorithms to measure audio programme loudness and true-peak audio level"
+    authors:
+      - name: "International Telecommunication Union"
+    year: 2015
+  - type: standard
+    title: "EBU R 128: Loudness normalisation and permitted maximum level of audio signals"
+    authors:
+      - name: "European Broadcasting Union"
+    year: 2020
+  - type: article
+    title: "Preferred levels for background ducking to produce esthetically pleasing audio for TV with clear speech"
+    authors:
+      - family-names: Torcoli
+        given-names: Matteo
+      - family-names: Freke-Morin
+        given-names: Alex
+      - family-names: Paulus
+        given-names: Jouni
+      - family-names: Simon
+        given-names: Christian
+      - family-names: Shirley
+        given-names: Ben
+    journal: "Journal of the Audio Engineering Society"
+    year: 2019
+    volume: 67
+    issue: 12
+  - type: article
+    title: "An international comparison of long-term average speech spectra"
+    authors:
+      - family-names: Byrne
+        given-names: Denis
+    journal: "Journal of the Acoustical Society of America"
+    year: 1994
+    volume: 96
+    issue: 4

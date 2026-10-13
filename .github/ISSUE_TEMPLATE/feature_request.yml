@@ -1,0 +1,43 @@
+name: Feature or default change
+description: A new tool, a new check, or a different default value.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The project adds tools slowly and on evidence (see CONTRIBUTING.md). A request that names the practice
+        it comes from, with a spec, a paper or a measurement, is far more likely to land than "it would be nice".
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem in the edit room
+      description: What you were trying to do, on what kind of material, and where the current tools stopped short.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: What the tool or default should do. If you are asking for a number to change, give the old and new values.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: A delivery spec, a standard, a paper, a listening test, or "measured in practice" with the material described.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - restore (spectral repair, de-rumble)
+        - match (dialogue EQ match)
+        - mix (carve, posts, transitions)
+        - qc (loudness, true peak, dead air, clicks, masking)
+        - foley (sound for stills)
+        - skills (Claude Code skills)
+        - CLI or packaging
+        - something else
+    validations:
+      required: true
