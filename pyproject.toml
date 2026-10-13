@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opendubstage"
+version = "0.1.0.dev0"
+description = "Open-source documentary and film sound post-production tools: spectral repair, dialogue EQ match, music carve, transitions, mix QC and restrained foley for stills."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+keywords = ["audio", "post-production", "documentary", "dialogue", "spectral repair", "loudness", "foley", "mixing"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Other Audience",
+  "Topic :: Multimedia :: Sound/Audio :: Analysis",
+  "Topic :: Multimedia :: Sound/Audio :: Editors",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = ["numpy>=1.23", "scipy>=1.9", "soundfile>=0.12"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "hypothesis>=6.100"]
+# Local generative foley backend. Woosh itself is installed from source (scripts/install_woosh.sh); its weights
+# are CC-BY-NC 4.0, see NOTICE.
+woosh = ["torch", "torchaudio", "torchvision", "Pillow"]
+# Apple Vision scene labels for foley (macOS only)
+vision = ["pyobjc-framework-Vision; sys_platform == 'darwin'"]
+
+[project.urls]
+Homepage = "https://github.com/gothicpixie/opendubstage"
+Source = "https://github.com/gothicpixie/opendubstage"
+Issues = "https://github.com/gothicpixie/opendubstage/issues"
+Roadmap = "https://github.com/gothicpixie/opendubstage/blob/main/ROADMAP.md"
+
+[project.scripts]
+opendubstage = "opendubstage.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["opendubstage"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests/foley"]
+addopts = "-q"

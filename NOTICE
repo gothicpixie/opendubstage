@@ -1,0 +1,35 @@
+OpenDubStage
+Copyright 2026 The OpenDubStage contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Origin of the code
+------------------
+All source files were written for this project by its contributors, or for the
+earlier "stillfoley" project by the same contributors (opendubstage/foley,
+tests/foley, docs/foley-*.md, scripts/), which was also Apache-2.0. No
+third-party source code is bundled.
+
+Model weights and optional backends
+-----------------------------------
+This repository does not bundle any model weights, datasets, or third-party
+source code. Optional backends download and run third-party software and
+weights that carry their own licences, which are NOT Apache-2.0 and are
+frequently non-commercial:
+
+- Woosh (Sony AI): code MIT / Apache-2.0; weights CC-BY-NC 4.0.
+- Synchformer weights (downloaded by Woosh from hkchengrex/MMAudio): CC-BY-NC 4.0.
+- roberta-large tokenizer/config (Hugging Face): MIT.
+
+Reference data
+--------------
+opendubstage/restore/memofix.py contains the 1/3-octave long-term average
+speech spectrum values published in Byrne et al. (1994), J. Acoust. Soc. Am.
+96(4), "An international comparison of long-term average speech spectra",
+used as numeric reference data with citation.
+
+Example media
+-------------
+The photographs in examples/foley/public_domain/ are in the public domain;
+see examples/foley/public_domain/SOURCES.md for provenance. All audio used by
+the test suite is generated synthetically at test time.

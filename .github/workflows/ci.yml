@@ -1,0 +1,35 @@
+name: ci
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    env:
+      HF_HUB_OFFLINE: "1"          # belt and braces: nothing in the suite may download a model
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install ffmpeg and libsndfile (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg libsndfile1
+      - name: Install ffmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e ".[dev]"
+      - run: make verify PY=python
+      - name: CLI smoke test
+        run: |
+          opendubstage --help
+          opendubstage foley plan examples/foley/public_domain/sequence.json -o "$RUNNER_TEMP/cues.json"
+          opendubstage foley check examples/foley/public_domain/sequence.json "$RUNNER_TEMP/cues.json"

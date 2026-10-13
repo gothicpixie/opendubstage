@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Foley">
+  <rect width="64" height="64" rx="14" fill="#10191B"/>
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#254044" stroke-width="1.5"/>
+  <rect x="10" y="15" width="34" height="33" rx="3" fill="none" stroke="#5C9390" stroke-width="2.5"/>
+  <circle cx="19" cy="25" r="3" fill="#E9B56C"/>
+  <path d="M14 41l8-9 6 5 5-6 7 10" fill="none" stroke="#5C9390" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M49 24v16M54 19v26" stroke="#E9B56C" stroke-width="3" stroke-linecap="round"/>
+</svg>

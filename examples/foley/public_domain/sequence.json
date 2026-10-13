@@ -1,0 +1,21 @@
+{
+  "seed": "pd-demo",
+  "dialogue_lufs": -24.0,
+  "stills": [
+    {"id": "train", "path": "freight_train_randolph_1937.jpg", "start": 0, "dur": 8, "chapter": "town",
+     "caption": "Freight train at Randolph station, September 1937", "time_of_day": "day"},
+    {"id": "street", "path": "port_gibson_street_1940.jpg", "start": 8, "dur": 8, "chapter": "town",
+     "caption": "Saturday afternoon on the main street, cars parked along the sidewalk, Port Gibson, Mississippi, 1940", "time_of_day": "day"},
+    {"id": "mother", "path": "migrant_mother_1936.jpg", "start": 16, "dur": 8, "chapter": "town",
+     "caption": "Destitute pea pickers in California. Mother of seven children. Nipomo, California, 1936"},
+    {"id": "mud", "path": "pie_town_team_car_mud_1940.jpg", "start": 24, "dur": 8, "chapter": "country",
+     "caption": "Team pulling a car out of the mud; the roads near Pie Town, New Mexico, after a heavy rain, 1940", "time_of_day": "day"},
+    {"id": "lake", "path": "derwentwater_boat_landing_1890s.jpg", "start": 32, "dur": 14, "chapter": "country",
+     "caption": "On Derwentwater, boat landing, Lake District, England", "time_of_day": "day"}
+  ],
+  "narration": [
+    {"start": 2.0, "end": 7.0},
+    {"start": 17.0, "end": 23.0, "key": true},
+    {"start": 33.5, "end": 38.0}
+  ]
+}

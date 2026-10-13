@@ -1,0 +1,108 @@
+{
+  "schema": "opendubstage.foley.cuesheet/0.1",
+  "dialogue_lufs": -24.0,
+  "duration": 46,
+  "cues": [
+    {
+      "id": "b0001",
+      "layer": "bed",
+      "sound_class": "city_street",
+      "at": 0.0,
+      "dur": 24.0,
+      "target_lufs": -40.0,
+      "fade_in": 5.0,
+      "fade_out": 5.0,
+      "still_id": null,
+      "prompt": "distant city street traffic and footsteps, no horns, no music, no voices, ambience loop",
+      "variant": 0,
+      "room": "street",
+      "src": null
+    },
+    {
+      "id": "t0003",
+      "layer": "texture",
+      "sound_class": "train_far",
+      "at": 0.8,
+      "dur": 12.2,
+      "target_lufs": -36.0,
+      "fade_in": 3.0,
+      "fade_out": 3.0,
+      "still_id": "train",
+      "prompt": "a steam train passing across open country, far away, no music, no voices, ambience",
+      "variant": 1,
+      "room": "street",
+      "src": null
+    },
+    {
+      "id": "s0005",
+      "layer": "spot",
+      "sound_class": "car_far",
+      "at": 9.081,
+      "dur": 3.0,
+      "target_lufs": -32.0,
+      "fade_in": 0.03,
+      "fade_out": 0.3,
+      "still_id": "street",
+      "prompt": "a car passing slowly on a quiet road, distant, quiet, recorded on location, slightly muffled, no music, no voices, one-shot",
+      "variant": 2,
+      "room": "street",
+      "src": null
+    },
+    {
+      "id": "b0002",
+      "layer": "bed",
+      "sound_class": "water_edge",
+      "at": 19.0,
+      "dur": 27.0,
+      "target_lufs": -40.0,
+      "fade_in": 5.0,
+      "fade_out": 2.0,
+      "still_id": null,
+      "prompt": "calm water edge, faint lapping, light breeze, no music, no voices, ambience loop",
+      "variant": 0,
+      "room": "outdoor_open",
+      "src": null
+    },
+    {
+      "id": "t0004",
+      "layer": "texture",
+      "sound_class": "water_lap",
+      "at": 32.8,
+      "dur": 13.200000000000003,
+      "target_lufs": -36.0,
+      "fade_in": 3.0,
+      "fade_out": 3.0,
+      "still_id": "lake",
+      "prompt": "gentle water lapping against a wooden dock, close, no music, no voices, ambience",
+      "variant": 0,
+      "room": "outdoor_open",
+      "src": null
+    }
+  ],
+  "decisions": [
+    {
+      "still_id": "train",
+      "sound_class": "train_far",
+      "accepted": true,
+      "reason": "texture"
+    },
+    {
+      "still_id": "lake",
+      "sound_class": "water_lap",
+      "accepted": true,
+      "reason": "texture"
+    },
+    {
+      "still_id": "street",
+      "sound_class": "car_far",
+      "accepted": true,
+      "reason": "spot"
+    },
+    {
+      "still_id": "mud",
+      "sound_class": "car_far",
+      "accepted": false,
+      "reason": "same sound class too recently"
+    }
+  ]
+}

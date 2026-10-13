@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="160" viewBox="0 0 800 160" role="img" aria-label="OpenDubStage">
+  <style>
+    .name { fill: #F4EEE3; }
+    .stage { fill: #E6B46E; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #17272A; }
+      .stage { fill: #9B632C; }
+    }
+  </style>
+  <g transform="translate(16 16) scale(2)">
+    <rect width="64" height="64" rx="14" fill="#10191B"/>
+    <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#254044" stroke-width="1.5"/>
+    <path d="M8 49V25C8 14.4 17.8 8 32 8s24 6.4 24 17v24" fill="none" stroke="#D7A25D" stroke-width="3" stroke-linecap="round"/>
+    <path d="M8 51H56" stroke="#D7A25D" stroke-width="3" stroke-linecap="round"/>
+    <path d="M16 25v21M24 25v21M32 22v24M40 25v21M48 25v21" stroke="#426F70" stroke-width="2" stroke-linecap="round"/>
+    <path d="M13 37h6M21 30h6M29 39h6M37 27h6M45 35h6" stroke="#F1BE75" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="32" cy="13.5" r="1.7" fill="#F1BE75"/>
+  </g>
+  <text x="172" y="105" font-family="Avenir Next, Avenir, sans-serif" font-size="65" font-weight="600" letter-spacing="-2"><tspan class="name">Open</tspan><tspan class="stage">DubStage</tspan></text>
+</svg>
