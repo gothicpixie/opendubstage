@@ -2,7 +2,7 @@
 
 This module began as the standalone *stillfoley* project and is now part of OpenDubStage.
 
-**Documentary-grade sound for still photographs and archival footage.**
+Documentary-grade sound for still photographs and archival footage.
 
 A documentary built from photographs (the Ken Burns way) needs a little sound under its pictures:
 - a bed of room or air;
@@ -46,7 +46,7 @@ opendubstage foley generate examples/foley/public_domain/sequence.json cues.json
 opendubstage foley render cues.json -o stems/
 ```
 
-The foley core has **no dependencies** beyond the Python standard library, plus `ffmpeg` for rendering.
+The foley core has no dependencies beyond the Python standard library, plus `ffmpeg` for rendering.
 
 ## Input: a sequence
 
@@ -95,7 +95,7 @@ The rules, with their reasoning and sources, are in [docs/rules.md](foley-rules.
 
 The survey in [docs/survey.md](foley-survey.md) explains the choice: **wrap open models; do not train from scratch.**
 
-The prototype backend is Sony AI's **Woosh-DVFlow-8s**: video+text to 48 kHz audio in 4 steps, with MPS auto-selected. A still is presented as a static 8 s clip, so the picture's content conditions the model but no motion does. Total weights are about 4.6 GB.
+The prototype backend is Sony AI's Woosh-DVFlow-8s: video+text to 48 kHz audio in 4 steps, with MPS auto-selected. A still is presented as a static 8 s clip, so the picture's content conditions the model but no motion does. Total weights are about 4.6 GB.
 
 ```bash
 scripts/install_woosh.sh        # clones Woosh, installs it, fetches 3 weight archives; refuses if disk would drop below 40 GB free

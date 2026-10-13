@@ -27,8 +27,8 @@ gate (`opendubstage qc`) independently caught 38 of the 139 that overlapped its 
 The model was the only ear on: cuts that start or end mid-thought; sung vocals under speech
 (energy-based masking is not vocal-aware); local rumble and room jumps between adjacent voices
 (the tonal check averages per class); music chopped mid-phrase behind a ≥ 1.5 s fade; a
-60–90 s music interlude read as a pacing hole. It also caught **voices buried in a generated
-instrumental** that both Whisper and the generator's own lyric channel missed.
+60–90 s music interlude read as a pacing hole. It also caught voices buried in a generated
+instrumental that both Whisper and the generator's own lyric channel missed.
 
 What it is bad at: word and lyric transcription (do not use its text); absolute loudness
 (it will call −24 LUFS dialogue "quiet" if the previous chunk was louder); consistency across

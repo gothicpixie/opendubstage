@@ -5,7 +5,7 @@
 
 ## Goal
 
-Build an open-source tool that fine-tunes **VoxCPM 1.5** with **LoRA** on Apple silicon using **MLX** (Apple's Metal-native
+Build an open-source tool that fine-tunes VoxCPM 1.5 with LoRA on Apple silicon using MLX (Apple's Metal-native
 array framework). The tool must:
 
 - produce LoRA weights that the official PyTorch VoxCPM inference code loads without changes;
@@ -28,7 +28,7 @@ exists.
   https://voxcpm.readthedocs.io/en/latest/deployment/mlx_audio.html). It supports VoxCPM 1.0/1.5 inference.
   - Reuse its module ports where they are correct.
   - Where they differ from upstream, upstream wins.
-- **Reference training config.** This is a real config that has been used with the upstream trainer; keep its semantics:
+- **Reference training config:** a config that has been used with the upstream trainer; keep its semantics:
   ```yaml
   sample_rate: 44100
   batch_size: 4
@@ -84,15 +84,15 @@ Once every Phase 1 (VoxCPM 1.5) acceptance item passes:
 
 ## Hard rules
 
-- **Public data only.** Use public datasets for every test, benchmark, example and CI fixture, for example LJSpeech
+- **Public data only:** use public datasets for every test, benchmark, example and CI fixture, for example LJSpeech
   (single speaker, public domain) or a LibriTTS-R speaker subset (check its licence). Never commit any private or personal
   voice data. Generated test fixtures must be small (under 5 MB total in the repo).
-- **Licences.** Read upstream VoxCPM's licence and mlx-audio's licence before copying any code. Keep the required
+- **Licences:** read upstream VoxCPM's licence and mlx-audio's licence before copying any code. Keep the required
   attribution and notices, and choose a compatible licence for the new repo (state why in the README).
 - **Upstream is the oracle.** Every numerical claim is checked against the pinned upstream PyTorch code running on the
   same inputs. If you find an upstream bug, don't silently "fix" it in MLX. Match upstream, document the bug, and offer a
   flag.
-- **Validation log.** Record the commands you ran and their results in `docs/VALIDATION.md` as you go.
+- **Validation log:** record the commands you ran and their results in `docs/VALIDATION.md` as you go.
 
 ## Deliverables
 

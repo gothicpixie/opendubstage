@@ -38,18 +38,18 @@ Walter Murch's observation that listeners follow about two and a half simultaneo
 
 ## Protecting dialogue
 
-- **Narration onsets.** Nothing sounds in the 0.5 s before a narration onset or in the first 0.3 s of it, because a spot there masks the first word.
-- **Key lines.** From 4 s before a key line to 3 s after it, the sound is the bed alone: no spots, no textures. Textures end before the window, so their 3 s fade completes in time. The 3 s afterwards is the breath.
-- **Music up.** When music is the foreground there are no spots and no textures. The bed stays.
-- **Live or sync sound.** Archive footage that already carries its real sound, or any stretch marked `live`, gets no added effects.
-- **Designed silences.** Inside a designed silence nothing plays, not even the bed. Use one or two per film at most.
+- **Narration onsets:** nothing sounds in the 0.5 s before a narration onset or in the first 0.3 s of it, because a spot there masks the first word.
+- **Key lines:** from 4 s before a key line to 3 s after it, the sound is the bed alone: no spots, no textures. Textures end before the window, so their 3 s fade completes in time. The 3 s afterwards is the breath.
+- **Music up:** when music is the foreground there are no spots and no textures. The bed stays.
+- **Live or sync sound:** archive footage that already carries its real sound, or any stretch marked `live`, gets no added effects.
+- **Designed silences:** inside a designed silence nothing plays, not even the bed. Use one or two per film at most.
 
 ## When not to add sound (no-sound classes)
 
-- **Portraits, close-ups and posed pictures.** The face is the subject. With Apple Vision, a face covering at least 3% of the frame counts as a portrait.
+- **Portraits, close-ups and posed pictures:** the face is the subject. With Apple Vision, a face covering at least 3% of the frame counts as a portrait.
 - **Details and documents:** letters, maps, certificates, clippings.
 - **Technically weak pictures:** blurry, dark or overexposed. The picture is already asking for forgiveness, so sound should not call attention to it.
-- **Objects that make no sound.** A lantern does not tick and a cake does not rustle. The taxonomy simply has no class for them.
+- **Objects that make no sound:** a lantern does not tick and a cake does not rustle. The taxonomy simply has no class for them.
 
 ## Avoiding the cartoon feel (prompts and post chain)
 
@@ -63,7 +63,7 @@ Walter Murch's observation that listeners follow about two and a half simultaneo
 3. **Match the era and the mic** (`post.ERA_EQ`): an 80 Hz high-pass, a 9 kHz low-pass and a −3 dB dip at 3.5 kHz.
 4. **Worldize** with a short room matched to the bed: trees, open land, street, small room or hall.
 5. **Prefer textures to hits.** Laughter is a distant group, not a sitcom laugh. Footsteps are a few steps, not a march.
-6. **Witness test.** Play a viewer a handful of stills with and without sound. If they can point at the effect, lower it 3 dB or remove it.
+6. **Witness test:** play a viewer a handful of stills with and without sound. If they can point at the effect, lower it 3 dB or remove it.
 
 ## Sources (public)
 

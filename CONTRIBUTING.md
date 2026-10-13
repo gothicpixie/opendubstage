@@ -38,7 +38,7 @@ on Linux and macOS for Python 3.10–3.13, with `ffmpeg` installed. Tests that n
 See the foley-specific guidance in [docs/foley-rules.md](docs/foley-rules.md):
 - Add rule parameters to `Rules` (or `levels`). Enforce them in `plan()` and re-check them independently in `check()`.
 - Sound classes name one action, material, place and distance. The prompt lint rejects cartoon drift.
-- Backends document their code licence, their **weights licence** and whether commercial use is allowed, both in the
+- Backends document their code licence, their weights licence and whether commercial use is allowed, both in the
   backend's docstring and in NOTICE.
 
 ## Data and privacy

@@ -52,12 +52,12 @@ Shorten by removing whole 4/8/16-bar phrases; crossfade one beat (≈ 200–600 
 
 ## 3. Ducking: depth and frequency
 
-The one controlled study: Torcoli et al., AES 146 (2019): listeners want music **≥ 10 LU**
+The one controlled study: Torcoli et al., AES 146 (2019): listeners want music ≥ 10 LU
 under commentary and ambience ≥ 15 LU; non-experts prefer ~4 LU more; voice-over-voice
 ≥ 20 LU. The opposite fault: "if the music drops 15–20 dB on every line the audience hears the
 automation" (IRPR). WCAG 1.4.7 (AAA) is 20 dB and is a ceiling, not a target.
 
-The pro move is a moderate broadband duck plus a **spectral pocket** where consonants live
+The pro move is a moderate broadband duck plus a spectral pocket where consonants live
 (TrackSpacer, Neutron Unmask, pure:unmask do this live; `opendubstage carve` does it offline).
 
 | Parameter | Value | Why |
@@ -65,7 +65,7 @@ The pro move is a moderate broadband duck plus a **spectral pocket** where conso
 | Broadband duck under speech | −14 dB with the carve; −17 dB without | 10 LU minimum plus margin; the carve buys the rest |
 | Carve band | 1–4 kHz full cut, raised-cosine half-octave tapers; `--band 1000 4000` | ANSI S3.5 band importance peaks 1.5–3.5 kHz |
 | Carve depth | −6 dB (`--cut-db`); below 3 dB the masking change is marginal, beyond 6 dB strings and piano turn hollow each time the voice speaks | measured in practice |
-| Timing | attack 50 ms **look-ahead** (the pocket is open at the first syllable), hold 200 ms, release 300 ms; release < 200 ms pumps | measured in practice |
+| Timing | attack 50 ms look-ahead (the pocket is open at the first syllable), hold 200 ms, release 300 ms; release < 200 ms pumps | measured in practice |
 | Sidechain | dialogue 300 Hz–4 kHz frame RMS; gate −45 dBFS (`--gate-db`) with a 6 dB soft knee | no chatter on breaths |
 | STFT | 2048 / 512, sqrt-Hann WOLA on an absolute frame grid; stateless blocks with `carve_pad()` context so a block render matches a single pass | seamless 60 s blocks |
 | Duck envelope timing | down starts 0.5 s before speech over 0.6 s; up starts 1.0 s after over 2.0 s; gaps < 3 s stay down; 3–8 s rise half-way; ≥ 8 s full | a live sidechain cannot pre-roll; offline you know the timings |
@@ -80,7 +80,7 @@ not a compressor; keep `sidechaincompress` at most as a mild safety net (ratio 2
 1500). Deterministic, plottable, testable.
 
 Depth is per song, not per film: a sparse piano pad can sit at −8; a dense vocal song under
-speech needs −14 to −17 **or the instrumental**. Sometimes the answer is an exit, not a duck.
+speech needs −14 to −17, or the instrumental. Sometimes the answer is an exit, not a duck.
 
 ## 4. The music budget
 
@@ -111,7 +111,7 @@ speech needs −14 to −17 **or the instrumental**. Sometimes the answer is an 
 
 - Key line: from 4–6 s before, music fades (6 s) to −20 LU under dialogue or out; textures fade; bed stays. During: bed only, no spots, no music entry. After: 2–3 s of bed only (the breath), then the next element enters on a phrase boundary with a 2 s fade. Sources: *Senna*; Burns ("nothing makes sound more effective than the absence of sound"); Albrechtsen; *Apollo 11* ("a few seconds of breathing room before the actual ignition").
 - Laughter peaks: the recorded laugh is the sound; no laughter spot within 5 s; music holds its duck through it (keep-spans).
-- **Ending ladder**: last line → ≥ 3 s bed only → bed fade 2 s → **1.5 s true silence** → (optional: one recorded motif) → credits song from `ss=0`, `fade_in=0`, played to its real ending → 2 s silence → black. No music overlapping the final line; no spot effect in the last 30 s; nothing starts in the last 1.5 s before the credits; anything still sounding fades before it (music ≤ 4 s, dialogue within its air, ambience/live ≤ 2 s). The music budget skips the last narrated chapter so its song can swell as the button. Verify: `silencedetect=noise=-60dB:d=1.2` finds exactly one silence between the last line and the credits song; the last non-silent event is the motif or the song's final note. Sources: Third Coast (*Finn and the Bell*: "listen to the very last second"; *Time Bandit*: ending music is editorial).
+- **Ending ladder**: last line → ≥ 3 s bed only → bed fade 2 s → 1.5 s true silence → (optional: one recorded motif) → credits song from `ss=0`, `fade_in=0`, played to its real ending → 2 s silence → black. No music overlapping the final line; no spot effect in the last 30 s; nothing starts in the last 1.5 s before the credits; anything still sounding fades before it (music ≤ 4 s, dialogue within its air, ambience/live ≤ 2 s). The music budget skips the last narrated chapter so its song can swell as the button. Verify: `silencedetect=noise=-60dB:d=1.2` finds exactly one silence between the last line and the credits song; the last non-silent event is the motif or the song's final note. Sources: Third Coast (*Finn and the Bell*: "listen to the very last second"; *Time Bandit*: ending music is editorial).
 - A recurring motif, if any, is a **recorded** sound from the film's own sources, used 3–4 times ≥ 20 min apart; a generated stinger reads as a stinger.
 
 ## 8. Verify

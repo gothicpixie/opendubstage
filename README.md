@@ -11,7 +11,7 @@ moves a dialogue editor and a re-recording mixer make every day: spectral repair
 frequency-aware music ducking, J- and L-cuts, a broadcast-style QC pass, and restrained sound for still photographs.
 
 Each tool is a small Python module that you can read in one sitting. It has a documented method, defaults with the
-reasoning behind them, synthetic tests, and a command line. The audio cores need only **numpy, scipy and soundfile**.
+reasoning behind them, synthetic tests, and a command line. The audio cores need only numpy, scipy and soundfile.
 Model-based backends are optional extras, and the test suite never downloads a model.
 
 > **Status: alpha (0.1.0.dev0).** Every tool runs and is tested on synthetic signals. Interfaces may still change before 1.0.

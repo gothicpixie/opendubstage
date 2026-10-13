@@ -1,6 +1,6 @@
 # OpenDubStage art
 
-All artwork here is original and offered under **CC0 1.0 Universal**. You may copy, modify, and use it without attribution. The SVGs were drawn for this brief; the two stage scenes were generated with OpenAI's built-in image tool and composited locally with Pillow. No existing logos or photographs were used.
+All artwork here is original and offered under CC0 1.0 Universal. You may copy, modify, and use it without attribution. The SVGs were drawn for this brief; the two stage scenes were generated with OpenAI's built-in image tool and composited locally with Pillow. No existing logos or photographs were used.
 
 | File | How it was made | Licence |
 | --- | --- | --- |

@@ -49,7 +49,7 @@ compression) whenever the measured LRA exceeds the target LRA; check the first p
 A sample-peak limiter misses inter-sample overs. Measured in practice: a mix limited at
 −2.5 dBFS sample read −1.3 dBTP. Rules:
 
-- Limit at **4× oversampling** (ITU-R BS.1770-4) or set the sample ceiling 0.6 dB below the target: `alimiter=limit=0.74` (−2.6 dBFS) to land ≤ −2.3 dBTP before AAC, ≤ −2 after.
+- Limit at 4× oversampling (ITU-R BS.1770-4) or set the sample ceiling 0.6 dB below the target: `alimiter=limit=0.74` (−2.6 dBFS) to land ≤ −2.3 dBTP before AAC, ≤ −2 after.
 - Verify with `ebur128=peak=true` or `opendubstage qc` (`true_peak_max` −2.0), never with the limiter's own meter.
 - Leave 0.3–0.5 dB for the codec; re-measure the encoded file.
 
@@ -100,7 +100,7 @@ spot effect, the music) and is not a click. Report clicks only on edges whose fa
 
 ## 5. The transcription check (every cut)
 
-Transcribe each narration cue **out of the finished mix** (not the source) and compare its
+Transcribe each narration cue out of the finished mix (not the source) and compare its
 first and last six words with the word-timed transcript. Procedure in
 `references/transcription-check.md`. Essentials:
 

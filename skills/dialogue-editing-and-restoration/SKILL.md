@@ -32,7 +32,7 @@ character). OpenDubStage tool: `opendubstage specrepair` (`opendubstage.restore.
 | Pause after a passage | 1.5–3 s inside a thought; 5–10 s between thoughts; 12–25 s when the subject changes | interview practice (PremiumBeat; Sundance Collab); Murch on silence |
 | Never | cut into a neighbouring word; end a cue inside a laugh, sigh or breath (a "keep span") | Third Coast / Peabody pattern (*Finn and the Bell* kept the stammers) |
 
-**Check every cut by transcribing it out of the mix**, not by trusting the edit list. The
+Check every cut by transcribing it out of the mix, not by trusting the edit list. The
 procedure is in `mix-qc-and-delivery` (`references/transcription-check.md`): normalise
 disfluencies ("um", "uh", false starts like "bea-", stutter repeats) on both sides,
 treat overlapping cross-talk as optional, and pass a cut if either the all-speaker or the
@@ -41,7 +41,7 @@ similarity ≥ 0.5 on the first/last six words.
 
 ## 2. Breaths, laughs and interjections are content
 
-- Breaths: attenuate −8 dB (−12 dB right before a music post), 30 ms ramps; **never delete**, or the voice "sounds robotic" (IRPR; NPR practice). Replacing a breath with the same duration of room tone keeps the pause.
+- Breaths: attenuate −8 dB (−12 dB right before a music post), 30 ms ramps; never delete, or the voice "sounds robotic" (IRPR; NPR practice). Replacing a breath with the same duration of room tone keeps the pause.
 - Keep-spans: every `[laughs]`, `[chuckles]`, `[sighs]`, `[sniffs]` plus 0.3 s, and any breath within 1 s of a sentence end. They count as speech for the music and ambience envelopes (music does not rise into a laugh), are excluded from dips and levelers, and a cue may not end inside one (extend to `keep_end + 0.45 s`). Verify: ≥ 95 % of laughs sit at full duck depth; zero cue ends inside a keep-span.
 - A second speaker's off-mic interjections stay; ride them up (see `voice-matching`), do not gate them.
 - The recording's own room (a car, a kitchen, tape hiss) is a quality, not a fault (LeBlanc, *Fire of Love*; Bergh, *Becoming Led Zeppelin*).
@@ -49,7 +49,7 @@ similarity ≥ 0.5 on the first/last six words.
 ## 3. Room tone
 
 - Fill every hole with room tone; room tone never stacks under speech ("audio levels are additive"); fills built from scraps use equal-power crossfades ≤ 20 ms (Post Audio Tips).
-- Lay a learned room-tone floor at **−46 LUFS** under the whole narration stem and under any synthetic bridge line, below the designed beds and above digital silence. It is what the ear uses to accept a cut, and what makes J-cuts possible.
+- Lay a learned room-tone floor at −46 LUFS under the whole narration stem and under any synthetic bridge line, below the designed beds and above digital silence. It is what the ear uses to accept a cut, and what makes J-cuts possible.
 - Synthesis: take frames in the bottom 10 % RMS with no word within 150 ms (≥ 20 s total); either concatenate the longest clean gaps with 500 ms equal-power crossfades into a 60 s loop (2 s loop crossfade), or synthesise from the median PSD (`n_fft` 2048, Rayleigh magnitude, random phase). Verify: LTAS of the bed within ±2 dB of the learned PSD 100 Hz–8 kHz; autocorrelation peak at the loop length < 0.3.
 - Loop lengths that are not multiples of each other (e.g. 41 s and 67 s) so the ear cannot find the cycle.
 
@@ -61,7 +61,7 @@ opendubstage specrepair SRC DST --events '[[t0,t1],...]' --protected '[[w0,w1],.
 
 - **Replace** (room-tone fill) for a non-verbal event in a pause: cough, throat-clear, sneeze, handling. Boundaries are refined from frame energy against the local floor (`active_db` 6, `peak_db` 10, `merge_gap` 0.25 s, `search` ±0.5 s) inside the gap the protected word intervals leave (`guard` 10 ms); the patch is room tone from the nearest quiet stretch within `context` 30 s, EQ-matched to the local noise spectrum (1/3-oct, clamped ±6 dB), level-matched, spliced with 30 ms equal-power crossfades. This is RX "Spectral Repair > Replace" plus "Ambience Match".
 - **Attenuate** for an event that overlaps speech or a low-frequency thump: per-bin magnitudes above the context reference (median of the surrounding frames, or a left/right interpolation) are pulled down to it, optionally only below `fmax`; phase is kept. Thump detector: 20–150 Hz band jumps ≥ 12 dB over its 2 s running median with a ≥ 9 dB rise, ≤ 0.5 s long, and LF within 3 dB of the 300–3000 Hz band at the peak (speech is mid-heavy, a thump is LF-heavy); attenuate bins up to 250 Hz.
-- Samples outside the reported regions are **bit-exact** to the input; verify with a sample diff and a cross-correlation lag of 0.
+- Samples outside the reported regions are bit-exact to the input; verify with a sample diff and a cross-correlation lag of 0.
 - Event seeds come from the transcript's audio-event tags (`[coughs]`, `[clears throat]`, `[sneezes]`, `[microphone rustling]`) refined ±0.3 s by spectral flux in 1–6 kHz (> median + 12 dB for ≥ 3 frames).
 - Verify after repair: energy inside each event window within 3 dB of the surrounding floor; neighbouring words untouched; Whisper transcript before = after; DNSMOS not lower. Leave `[sniffs]` at −10 dB attenuate rather than replace (a synthesised 600 ms gap where someone inhaled reads as an edit).
 - Mouth clicks: detect with a 3 kHz high-pass, 2 ms frames, kurtosis > 8, duration < 10 ms, only in word gaps > 80 ms; fill with `adeclick=w=20:o=75:a=4:t=1.5` under `enable=between(t,…)`. Autoregressive fills are valid to ~45–80 ms (Mokrý & Rajmic 2024); nothing packaged does longer gaps well.
@@ -84,8 +84,8 @@ Order: repair → high-pass / sub-cut → subtractive EQ → de-ess → compress
 
 ## 6. Neural restoration: what it may and may not do
 
-The failure that matters: a model can **raise DNSMOS while destroying off-mic speech and
-timbre**. Measured in practice: the same denoiser that was transparent on phone or handheld-recorder narration
+The failure that matters: a model can raise DNSMOS while destroying off-mic speech and
+timbre. Measured in practice: the same denoiser that was transparent on phone or handheld-recorder narration
 produced "severe musical noise, aggressive gating, underwater robotic artefacts" on a distant
 recorder and dropped a second speaker's interjections. Judge on the voice you cannot afford to
 lose, not on the mean opinion score.

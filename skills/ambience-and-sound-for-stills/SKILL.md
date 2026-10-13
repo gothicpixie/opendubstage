@@ -24,12 +24,12 @@ tool: `opendubstage foley` (`opendubstage.foley`: `plan`, `check`, `Rules`, `lev
 
 | Rule | Number | Source |
 |---|---|---|
-| A bed runs under every narrated stretch | per-cue target **−40 LUFS** at a −24 dialogue anchor (−16 LU); duck −3 dB under speech | Torcoli et al. 2019: ambience ≥ 15 LU under commentary |
+| A bed runs under every narrated stretch | per-cue target −40 LUFS at a −24 dialogue anchor (−16 LU); duck −3 dB under speech | Torcoli et al. 2019: ambience ≥ 15 LU under commentary |
 | Not inaudible | −44 LUFS with a −5 duck (−49 under speech) is inaudible on a TV at living-room level; beds are the room the voice lives in, not a safety net against the silence detector | NPR §5 "what pros would say"; measured in practice |
 | Gap lift | +5 dB over any stretch > 3 s with no speech and no music, eased 2 s; never above −33 LUFS short-term | measured in practice (45 accidental holes in one mix) |
 | Gaps are air, not holes | momentary loudness (400 ms) in every speech gap ≥ −46 LUFS; ambience in the clear −38…−42 LUFS | Torcoli; EBU Tech 3341 |
 | Dead-air detector | no span below −60 dBFS sample peak for > 3 s between first and last cue (strict: −50 dBFS / 2 s); programme head and tail exempt | `opendubstage qc` `dead_air`; ffmpeg `silencedetect` |
-| **Coverage check** | the union of bed cues (target ≤ −38) covers [0, total] with no hole; **dead air usually comes from beds shorter than their scenes**, so check every bed's source length against the scene it must cover before mixing | measured in practice |
+| **Coverage check** | the union of bed cues (target ≤ −38) covers [0, total] with no hole; dead air usually comes from beds shorter than their scenes, so check every bed's source length against the scene it must cover before mixing | measured in practice |
 | Designed silence | at most two per film, chosen by hand, listed in an explicit whitelist that the dead-air check reads; inside one, nothing plays, not even the bed | Albrechtsen (total silence once or twice per film); Burns |
 | Bed joins | successive beds crossfade 5 s (start 5 s early), never fade from silence at a chapter start; one bed per scene, chosen from the scene's pictures (time of day, place), not per still | `foley.Rules.bed_crossfade_s`; TSNGO (distance per scene) |
 | Loops | 3–5 s equal-power; lengths that are not multiples of each other (41 s / 67 s) | Pixflow; rule of thumb |

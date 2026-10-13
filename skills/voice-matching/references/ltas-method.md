@@ -25,7 +25,7 @@ Zero-mean the curve over 300 Hz–3 kHz before applying so the loudness normalis
 
 A dry voice gets a room by early reflections, not by a long tail. `early_reflections(delays_ms=(3.1, 5.3, 7.9, 11.3, 17.2, 26.0, 39.0), first=0.30, rt60_ms=110, in_gain=0.9)` returns an `aecho` string whose taps decay to the RT60. Measure the reference's `decay_ratio_db(x, sr, intervals, early=(0, 0.03), late=(0.03, 0.12))` on word endings and tune RT60 until the bridge's ratio is within 3 dB. A car: RT60 < 0.3 s. A hall: ~1.1 s (then use a real IR via `afir`, not `aecho`).
 
-Also give it the reference's **floor**: a learned room-tone loop at −46 LUFS under the bridge. Without the floor, the bridge sits in a different room however good the EQ.
+Also give it the reference's floor: a learned room-tone loop at −46 LUFS under the bridge. Without the floor, the bridge sits in a different room however good the EQ.
 
 ## Splitting speakers by pitch
 
@@ -36,4 +36,4 @@ Also give it the reference's **floor**: a learned room-tone loop at −46 LUFS u
 - Measuring the LTAS on frames that include music or the other speaker: use word timings when you have them.
 - Fitting against a reference measured *before* its own chain while applying the EQ *after* the source's chain: measure both at the point in the graph where the match will be applied.
 - Side files that mutate chains at import (a fitted-EQ JSON read by the mixer): record them in the mix report or inline the curve in the cue sheet, or your cache keys will silently change when you re-measure.
-- A match that passes the deviation test and still sounds wrong usually fails on **room** or **level**, not spectrum: check the decay ratio and the ±2 LU short-term rule before touching the EQ again.
+- A match that passes the deviation test and still sounds wrong usually fails on room or level, not spectrum: check the decay ratio and the ±2 LU short-term rule before touching the EQ again.

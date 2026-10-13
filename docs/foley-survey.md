@@ -9,7 +9,7 @@ The facts below come from the GitHub API, Hugging Face API file sizes, model car
 
 **Wrap now; fine-tune later only if the evaluation says so; do not train from scratch.**
 
-1. **The hard part is not generation.** Current open models can already make a distant car, water lapping on a dock, or wind in trees. What goes wrong in documentary photo sound is editorial:
+1. **The hard part is editorial, not generation.** Current open models can already make a distant car, water lapping on a dock, or wind in trees. What goes wrong in documentary photo sound is:
    - too many sounds;
    - sounds on the cut;
    - sounds that follow the camera move;
@@ -17,7 +17,7 @@ The facts below come from the GitHub API, Hugging Face API file sizes, model car
    - sounds on portraits.
 
    Those are placement, level and restraint problems. A rules engine solves them deterministically and testably, and that engine is this repository's core.
-2. **Still-image conditioning is weak everywhere, and that is acceptable.** Only MMAudio has a documented image-only path, and its own README calls it experimental ("not something MMAudio has been trained for"). Every video-to-audio model was trained on VGGSound/AudioSet-style video, which skews toward close, literal, foreground foley. That is the opposite of what a still needs. The robust path is:
+2. **Still-image conditioning is weak everywhere, and that is acceptable.** Only MMAudio has a documented image-only path, and its own README calls it experimental ("not something MMAudio has been trained for"). Every video-to-audio model was trained on VGGSound/AudioSet-style video, which skews toward close, literal, foreground foley. That is the opposite of what a still needs. The reliable path is:
 
    picture -> scene analysis (caption, catalogue record, on-device vision labels, face size) -> a restrained text prompt -> a strong text(+image) generator -> a post chain that adds era, distance and room.
 3. **A from-scratch model is not justified.** It would need:
@@ -30,11 +30,11 @@ The facts below come from the GitHub API, Hugging Face API file sizes, model car
 
 ### Prototype choice
 
-- **MMAudio was the first choice** because of its image mode, but its smallest variant needs about **6.7 GB** of weights: 629 MB model, 687 MB VAE, 449 MB vocoder, 950 MB Synchformer and 3,947 MB DFN5B CLIP. That exceeds this prototype's 6 GB download budget.
+- **MMAudio was the first choice** because of its image mode, but its smallest variant needs about 6.7 GB of weights: 629 MB model, 687 MB VAE, 449 MB vocoder, 950 MB Synchformer and 3,947 MB DFN5B CLIP. That exceeds this prototype's 6 GB download budget.
 - **The prototype uses Sony AI's Woosh-DVFlow-8s** (2026) instead:
   - It is distilled video+text-to-audio: 4 sampling steps, 48 kHz.
   - The reference scripts select MPS automatically.
-  - It needs about **4.6 GB** in total: the AE, DVFlow and TextConditionerV releases plus the 950 MB Synchformer. The roberta-large text encoder loads lazily and only its config and tokenizer are downloaded.
+  - It needs about 4.6 GB in total: the AE, DVFlow and TextConditionerV releases plus the 950 MB Synchformer. The roberta-large text encoder loads lazily and only its config and tokenizer are downloaded.
   - A still is presented as a static 8 s clip.
 - **AudioLDM2 was dropped.** It is text only, 16 kHz, and its README warns it needs about 20 GB of RAM on MPS, which is unsafe on a 24 GB machine that is rendering.
 

@@ -61,7 +61,7 @@ Code session after installing; the available-skills list should show the eight n
 
 ## Conventions
 
-- Frontmatter: `name` (matches the folder) and `description` (states precisely when to use the
+- Frontmatter: `name` (matches the folder) and `description` (states when to use the
   skill and when not to, because the description is what triggers loading).
 - Bodies are rules, numbers, procedures and checks; long detail lives in `references/`.
 - Levels are stated relative to dialogue at −24 LUFS; convert for other anchors.

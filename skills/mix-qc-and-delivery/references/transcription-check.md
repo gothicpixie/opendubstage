@@ -1,7 +1,7 @@
 # Transcription check of every narration cut
 
 Purpose: catch clipped first or last words, fades that eat a syllable, wrong source offsets
-and mid-sentence cuts, by listening to the **mix** with an ASR model and comparing with the
+and mid-sentence cuts, by listening to the mix with an ASR model and comparing with the
 word-timed transcript. It is binding: a failing cue blocks the build.
 
 ## Inputs
@@ -64,7 +64,7 @@ and family" matches "dear friends and family").
 - **Out of the mix, not the source.** The failure modes (fade placement, offset errors, a bed masking a syllable) only exist in the mix.
 - **Normalise disfluencies.** A kept stammer ("bea- beautiful") is a feature of the recording (Third Coast / Peabody pattern), not a clipped word; without normalisation it fails the head check.
 - **Either comparison passes.** Diarisation on a two-person recording merges and splits labels; requiring the main-speaker match alone produced false failures, requiring the all-speaker match alone failed whenever ASR dropped an interjection.
-- **Thresholds.** 0.5 on six words tolerates one ASR substitution and one dropped function word; a clipped first or last word reliably drives the ratio below 0.4 in practice.
+- **Thresholds:** 0.5 on six words tolerates one ASR substitution and one dropped function word; a clipped first or last word reliably drives the ratio below 0.4 in practice.
 
 ## Cost
 

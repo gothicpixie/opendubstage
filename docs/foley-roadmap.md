@@ -13,11 +13,11 @@ Inherited from the standalone stillfoley project; the repo-wide plan is in [../R
 
 ## 0.2: make the generated sound usable
 
-- **Event windowing.** Generators return 8 s clips, but a spot is 1–3 s. Pick the window around the strongest onset, and use the quietest region for texture loops.
+- **Event windowing:** generators return 8 s clips, but a spot is 1–3 s. Pick the window around the strongest onset, and use the quietest region for texture loops.
 - **Seamless loops for beds and textures**, using a crossfaded loop point instead of a hard `-stream_loop`.
-- **Variant generation.** Make 3 variants per class from different seeds, rejecting any whose CLAP similarity to the prompt falls below a threshold.
-- **A VLM analyser.** A small local VLM that emits `{bed, sources:[{class, distance, confidence}]}` directly. It must beat the keyword analyser on the evaluation set before it becomes the default.
-- **Text-only backends.** Stable Audio Open (Stability Community Licence, the only route with a commercial option) and Woosh-DFlow.
+- **Variant generation:** make 3 variants per class from different seeds, rejecting any whose CLAP similarity to the prompt falls below a threshold.
+- **A VLM analyser:** a small local VLM that emits `{bed, sources:[{class, distance, confidence}]}` directly. It must beat the keyword analyser on the evaluation set before it becomes the default.
+- **Text-only backends:** Stable Audio Open (Stability Community Licence, the only route with a commercial option) and Woosh-DFlow.
 - **An API backend** for hosted text-to-sound-effects services, using the same `Backend` protocol.
 - **Exporters:** EDL/AAF markers, a Reaper project and an FCPXML audio lane.
 
@@ -40,7 +40,7 @@ The target is sound that viewers do not notice as sound design, but that makes t
 
 ### Blind listening
 
-- **Paired comparison (2AFC).** Each sequence is played *with* the planned sound and *with the bed only*, in random order. The listener answers two questions:
+- **Paired comparison (2AFC):** each sequence is played *with* the planned sound and *with the bed only*, in random order. The listener answers two questions:
   - "Which do you prefer?"
   - "In which one did you notice added sound effects?"
 - **The target is high preference with low detection.** The sound should be preferred more than 60% of the time and detected as an effect at or below 55%, close to chance.
@@ -55,7 +55,7 @@ The target is sound that viewers do not notice as sound design, but that makes t
   - at least 3 working sound editors or documentary editors.
 
   Results are reported separately for each panel.
-- **The witness test for personal films.** People who were there judge whether "that is how it sounded". This is qualitative and logged per still.
+- **The witness test for personal films:** people who were there judge whether "that is how it sounded". This is qualitative and logged per still.
 
 ### Objective metrics (automated, per release)
 

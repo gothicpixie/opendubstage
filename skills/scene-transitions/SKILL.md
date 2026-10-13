@@ -69,7 +69,7 @@ and `bridge_gaps` from the audio gate so a regression blocks the build.
 | 1 | the last narration line, with its full post-roll air; no music overlapping it |
 | 2 | ≥ 3 s of bed only |
 | 3 | bed fades over 2 s |
-| 4 | **1.5 s of true silence** (below −60 dBFS) |
+| 4 | 1.5 s of true silence (below −60 dBFS) |
 | 5 | optional: one recorded motif (a sound that was actually there, used 3–4 times ≥ 20 min apart through the film) |
 | 6 | the credits song from `ss=0`, `fade_in=0`, played to its real ending |
 | 7 | 2 s silence, then black |
