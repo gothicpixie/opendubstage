@@ -24,6 +24,9 @@ soundfile. Model-based backends are optional extras, and the test suite never do
 
 > **Status: alpha (0.1.0.dev0).** Every tool runs and is tested on synthetic signals. Interfaces may still change before 1.0.
 
+Experimental room-tone synthesis is available as `opendubstage roomtone`, with an opt-in
+`specrepair --synthesize-tone` fallback. See [method and limitations](docs/roomtone.md).
+
 ## Quickstart
 
 ```bash
