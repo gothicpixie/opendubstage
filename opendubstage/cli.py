@@ -11,6 +11,7 @@ from . import __version__
 
 # tool -> (module, one-line help). Modules are imported lazily so `--help` stays fast and light.
 TOOLS = {
+    "leveller": ("opendubstage.mix.leveller", "phrase-safe dialogue gain rides from word timings"),
     "specrepair": ("opendubstage.restore.specrepair", "spectral repair: room-tone replace, attenuate, LF thumps"),
     "memofix": ("opendubstage.restore.memofix", "remove car/room rumble learned from word gaps, LTASS matching EQ"),
     "ltasmatch": ("opendubstage.match.ltasmatch", "dialogue EQ match: fit an ffmpeg equalizer chain from LTAS"),

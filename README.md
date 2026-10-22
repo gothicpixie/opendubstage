@@ -41,6 +41,7 @@ opendubstage qc mix.wav --md qc.md           # loudness, true peak, LRA, dead ai
 | Spectral repair | Fill coughs, thumps and handling noise with the recording's own room tone; attenuate events under speech | `opendubstage specrepair` |
 | De-rumble | Take car rumble and room boom out of a voice memo without touching the voice above 400 Hz | `opendubstage memofix` |
 | Dialogue EQ match | Match one voice's long-term spectrum to another's with a gain-limited EQ, emitted as an `ffmpeg` filter chain | `opendubstage ltasmatch` |
+| Dialogue leveller | Ride whole phrases from word timings, with pause-only ramps and explicit breath policy | `opendubstage leveller` |
 | Music carve | Dip the music's 1–4 kHz band while someone speaks; bring music up in the gaps (posts); end cues on a phrase | `opendubstage carve` |
 | Transitions | J-cuts, L-cuts and equal-power crossfades at chapter boundaries, on a cue sheet, without moving sync | `opendubstage transitions` |
 | Mix QC | BS.1770-4 integrated loudness, true peak, LRA, dead air, clicks at edits, voice level jumps, music masking speech | `opendubstage qc` |
@@ -55,8 +56,7 @@ opendubstage qc mix.wav --md qc.md           # loudness, true peak, LRA, dead ai
   diff the result. It is not a replacement for RX on a difficult track. It is the batchable, checkable version of the
   routine pass.
 - **Auphonic** is a hosted service that levels, normalises loudness and reduces noise in one upload. OpenDubStage runs
-  offline, uploads nothing, and splits the work into separate steps with their parameters exposed. It has no dialogue
-  leveller yet; that is first on the [roadmap](ROADMAP.md).
+  offline, uploads nothing, and splits the work into separate steps with their parameters exposed. Its experimental [dialogue leveller](docs/leveller.md) uses explicit word timings; it does not infer speech or replace listening review.
 - **pyloudnorm** is a BS.1770 loudness meter and normaliser library. `qc` measures gated integrated loudness and true
   peak the same way, then adds what a broadcast QC pass asks for on top: LRA, dead air, clicks at cue edges, level
   jumps between voices and masking of speech in the presence band, with blocking and advisory checks kept separate.
@@ -72,12 +72,13 @@ opendubstage qc mix.wav --md qc.md           # loudness, true peak, LRA, dead ai
 | | `memofix` | Removes rumble from a voice memo recorded in a car (or a boomy room). It learns a noise profile from the gaps between words, subtracts below 400 Hz only, then applies a gentle, clamped EQ toward the international long-term average speech spectrum. Nothing is resynthesised. |
 | `opendubstage.match` | `ltasmatch` | Dialogue EQ match. It compares long-term average spectra on speech frames, then fits a smoothed, gain-limited set of peaking bands. The output is a plain `ffmpeg` `equalizer` chain, plus an early-reflections helper for putting a dry voice in a small room. |
 | `opendubstage.mix` | `carve` | Speech-keyed dynamic EQ: the music's 1–4 kHz band dips while dialogue is active. It also provides *posts*, where music comes up in the gaps between lines and dips just before the next word, and *phrase-safe* music outs on a section, phrase or downbeat. |
+| | `leveller` | Experimental phrase-constant gain rides, linked across channels, with sample-peak headroom caps and JSON audit report. See [method and timing schema](docs/leveller.md). |
 | | `transitions` | A cue-sheet pass at chapter boundaries. It adds ambience pre-laps (J-cuts), tails (L-cuts) and equal-power music crossfades, and puts a short ambience gap between two foreground songs. It never moves a sync point, touches dialogue or extends a cue past its source. |
 | `opendubstage.qc` | `qc` | Public-radio-style mix QC: integrated loudness (BS.1770-4 gating), true peak, LRA, dead air, clicks at cue edges, level jumps between voices, music/ambience masking of speech in the presence band, hard stops and tonal balance per voice class. Blocking and advisory checks are kept separate. |
 | `opendubstage.foley` | `foley` | Sound for stills and archival footage. It analyses each picture, proposes sounds, then applies documentary placement rules (levels relative to dialogue, density caps, never on the cut, key-line protection, no-sound classes). The output is an auditable cue sheet. Library and local-model backends are pluggable. See [docs/foley.md](docs/foley.md). |
 | `skills/` | | Agent skills for documentary sound design; see [skills/README.md](skills/README.md). |
 
-The planned tools (dialogue leveller, room-tone synthesis, de-reverb, a true-peak limiter helper and an MLX VoxCPM LoRA
+The planned tools (room-tone synthesis, de-reverb, a true-peak limiter helper and an MLX VoxCPM LoRA
 training port) are listed in [ROADMAP.md](ROADMAP.md).
 
 ## Install

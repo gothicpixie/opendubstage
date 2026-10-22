@@ -176,10 +176,13 @@ def plan(seq: Sequence, analyses: dict[str, SceneAnalysis], rules: Rules | None 
         xf = r.bed_crossfade_s if i > 0 else 0.0
         span = Interval(max(0.0, run[0].start - xf), run[-1].end)
         for part in _subtract(span, list(seq.silences)):
-            sheet.cues.append(Cue(nid("b"), Layer.BED, bed, part.start, part.dur,
+            dur = part.dur
+            while part.start + dur > part.end:  # preserve silence boundaries after float subtraction/addition
+                dur = math.nextafter(dur, 0.0)
+            sheet.cues.append(Cue(nid("b"), Layer.BED, bed, part.start, dur,
                                   target_lufs(Layer.BED, seq.dialogue_lufs),
-                                  fade_in=min(r.bed_crossfade_s, part.dur / 2),
-                                  fade_out=min(r.bed_crossfade_s if i < len(runs) - 1 else 2.0, part.dur / 2),
+                                  fade_in=min(r.bed_crossfade_s, dur / 2),
+                                  fade_out=min(r.bed_crossfade_s if i < len(runs) - 1 else 2.0, dur / 2),
                                   prompt=bed_prompt(bed, tod), room=ROOM_FOR_BED.get(bed)))
 
     # 2. transitions: hand-requested only, <= N per chapter run, straddling the cut
