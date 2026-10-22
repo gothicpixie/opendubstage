@@ -18,7 +18,14 @@ plus objective checks, never by a metric alone.
 
 ## 0.2: planned tools
 
-### Dialogue leveller
+### Dialogue leveller (experimental word-timing implementation)
+
+Implemented as `opendubstage leveller`; see [method, defaults and limitations](docs/leveller.md).
+Synthetic invariants cover convergence when limits allow, word-safe gains and exact untouched samples.
+VAD input, real-world listening validation and a release remain pending.
+The current phrase meter is ungated K-weighted mean square, not standardized three-second short-term loudness.
+
+Original goal:
 A sentence-level leveller in the spirit of a dialogue-leveller plug-in, as opposed to a compressor:
 - Measure short-term loudness per phrase (from word timings or a VAD) and ride each phrase toward a target with slow,
   phrase-aligned gain moves. Gain changes happen in pauses, never mid-word.
