@@ -52,6 +52,8 @@ class Params:
     thump_fmax: float = 250.0     # attenuate only bins up to this
     thump_lf_over_mid_db: float = -3.0  # at the peak, LF band must be within this of the 300-3000 Hz band
                                          # (speech is mid-heavy; a thump is LF-heavy) -> keeps voiced speech out
+    synthesize_tone: bool = False  # opt-in fallback when no contiguous tone meets tone_min_len
+    tone_seed: int = 0             # reproducible randomized-phase synthesis
 
 
 @dataclass
@@ -268,17 +270,40 @@ def fill_room_tone(x, sr, t0, s0, s1, active, fdb, floor, protected, excluded, g
         pieces.append(sl(r0, r1)); got += len(pieces[-1]) - xf
         if got >= need + 2 * xf:
             break
+    synthesis_report = None
     if not pieces:
-        return Patch(0, np.zeros(0), dict(rep, skipped="no room tone found"))
-    tone = eqp_concat(pieces, xf)
+        if not p.synthesize_tone:
+            return Patch(0, np.zeros(0), dict(rep, skipped="no room tone found"))
+        from .roomtone import Params as ToneParams, generate
+        # Only complete quiet frames inside context may teach the fallback. Never
+        # learn from a repaired event, protected word, or the active event's gap.
+        tc = t0 + np.arange(len(fdb)) * HOP + FR / 2
+        quiet = ok & (tc - FR / 2 >= centre - p.context) & (tc + FR / 2 <= centre + p.context)
+        clean = [(max(0., r0 * HOP), min(len(x) / sr, (r1 - 1) * HOP + FR))
+                 for r0, r1 in runs(quiet)]
+        blocked, cursor = [], 0.
+        for a, b in merge_intervals(clean):
+            if a > cursor:
+                blocked.append((cursor, a))
+            cursor = max(cursor, b)
+        if cursor < len(x) / sr:
+            blocked.append((cursor, len(x) / sr))
+        try:
+            tone, synthesis_report = generate(x, sr, need / sr, protected=blocked,
+                                             seed=p.tone_seed, p=ToneParams(guard_s=0.))
+        except ValueError as exc:
+            return Patch(0, np.zeros(0), dict(rep, skipped="room-tone synthesis unavailable", reason=str(exc)))
+    else:
+        tone = eqp_concat(pieces, xf)
     while len(tone) < need:
         tone = eqp_concat([tone, tone], xf)
     tone = tone[:need]
     loc = frames_in(len(fdb), t0, [(s0 - 3, s1 + 3)]) & (~busy) & (fdb <= floor + 6)
     ref = np.concatenate([sl(r0, r1) for r0, r1 in runs(loc)] or [np.zeros(0)])
-    if len(ref) < sr * 0.2:
+    if len(ref) < sr * 0.2 and pieces:
         ref = np.concatenate(pieces)
-    tone = eq_match(tone, ref, sr, p.eq_clamp_db)
+    if synthesis_report is None:
+        tone = eq_match(tone, ref, sr, p.eq_clamp_db)
     # equal-power fades; where the event already runs at the gap edge (no room for a full fade before it),
     # use a short 8 ms fade so the event does not leak through the crossfade
     kmax = max(1, min(xf, need // 4)); short = max(1, min(int(0.008 * sr), kmax))
@@ -291,9 +316,13 @@ def fill_room_tone(x, sr, t0, s0, s1, active, fdb, floor, protected, excluded, g
     y = x[n0:n1] * w_out + tone * w_in
     ai, bi = int(round((active[0] - t0) * sr)) - n0, int(round((active[1] - t0) * sr)) - n0
     before, after = level_db(x[n0:n1][ai:bi]), level_db(y[ai:bi])
-    rep.update(method="room_tone", start=round(s0, 4), end=round(s1, 4),
+    rep.update(method="room_tone_synthesis" if synthesis_report is not None else "room_tone", start=round(s0, 4), end=round(s1, 4),
                event_window=[round(active[0], 4), round(active[1], 4)], tone_pieces=len(pieces),
                before_db=round(before, 2), after_db=round(after, 2), reduction_db=round(before - after, 2))
+    if synthesis_report is not None:
+        synthesis_report["source_offset_seconds"] = t0
+        synthesis_report["clean_intervals"] = [[a + t0, b + t0] for a, b in synthesis_report["clean_intervals"]]
+        rep["synthesis"] = synthesis_report
     return Patch(n0, y, rep)
 
 
@@ -513,12 +542,29 @@ def main(argv=None) -> int:
     ap.add_argument("--thumps", nargs="?", const="all",
                     help="look for LF thumps: 'all' (default when given) or a JSON list of [start, end] ranges")
     ap.add_argument("--report", help="write the per-region reports as JSON")
+    ap.add_argument("--synthesize-tone", action="store_true", help="opt in to random-phase tone when no long clean stretch is found")
+    ap.add_argument("--tone-seed", type=int, default=0)
     a = ap.parse_args(argv)
     if a.thumps == "all":
         thumps = [(0.0, sf.info(a.src).duration)]
     else:
         thumps = _intervals(a.thumps)
-    reps = repair_file(a.src, a.dst, _intervals(a.events), _intervals(a.protected), thumps)
+    parser = _intervals
+    if a.synthesize_tone:
+        from pathlib import Path
+        from .roomtone import read_intervals
+        parser = read_intervals
+        inputs = {Path(v).resolve() for v in (a.src, a.events, a.protected,
+                  a.thumps if a.thumps != "all" else None) if v}
+        outputs = [Path(v).resolve() for v in (a.dst, a.report) if v]
+        if inputs.intersection(outputs) or len(set(outputs)) != len(outputs):
+            ap.error("output/report must not overwrite audio or timing inputs, or each other")
+    try:
+        events, protected = parser(a.events), parser(a.protected)
+    except ValueError as exc:
+        ap.error(str(exc))
+    reps = repair_file(a.src, a.dst, events, protected, thumps,
+                       p=Params(synthesize_tone=a.synthesize_tone, tone_seed=a.tone_seed))
     if a.report:
         with open(a.report, "w") as fh:
             json.dump(reps, fh, indent=1, default=float)

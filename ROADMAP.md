@@ -33,7 +33,13 @@ A sentence-level leveller in the spirit of a dialogue-leveller plug-in, as oppos
 - Tests: synthetic phrases at known levels converge to the target within ±1 LU, gain never moves inside a word, and
   the output is bit-exact where no ride is needed.
 
-### Room-tone synthesis
+### Room-tone synthesis (experimental mono implementation)
+
+Implemented as `opendubstage roomtone`, with opt-in `specrepair --synthesize-tone` fallback;
+see [method, defaults and limitations](docs/roomtone.md). Synthetic tests cover spectral/level
+match, long-lag nonperiodicity and protected samples. Real-world listening validation remains pending.
+
+Original goal:
 Generate arbitrary lengths of a recording's own room tone, for fills longer than any clean stretch available
 (an "ambience match"):
 - Learn the noise floor's spectral envelope and its slow modulation from gaps between words; synthesise by
