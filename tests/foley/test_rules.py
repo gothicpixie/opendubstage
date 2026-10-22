@@ -193,3 +193,20 @@ def test_texture_end_never_rounds_past_a_block():
     tex = sheet.by_layer(Layer.TEXTURE)
     assert tex and tex[0].end <= b
     assert check(sheet, seq) == []
+
+
+def test_bed_duration_rounding_never_crosses_designed_silence():
+    from opendubstage.foley.analysis import KeywordAnalyzer
+    from opendubstage.foley.model import Interval, Layer, Sequence, Still
+
+    boundary = 33.576484481558374
+    seq = Sequence(stills=[
+        Still(id='a', start=0, dur=6.140261126968152, chapter='a', caption='cars on a highway'),
+        Still(id='b', start=6.140261126968152, dur=28, chapter='b', caption='cars on a highway'),
+    ], silences=[Interval(boundary, boundary + 1)])
+    analyzer = KeywordAnalyzer()
+    sheet = plan(seq, {s.id: analyzer.analyze(s) for s in seq.stills})
+    beds = [c for c in sheet.cues if c.layer is Layer.BED]
+    assert len(beds) == 2
+    assert all(c.end <= boundary for c in beds)
+    assert check(sheet, seq) == []
