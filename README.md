@@ -22,7 +22,7 @@ delivery spec, a standard or a measurement, and every behaviour is pinned by a s
 Each tool is a small Python module that you can read in one sitting. The audio cores need only numpy, scipy and
 soundfile. Model-based backends are optional extras, and the test suite never downloads a model.
 
-> **Release candidate (0.1.1rc1).** The tools run on macOS and Linux. See [compatibility](#compatibility) for the tested interfaces.
+> **Stable release (0.1.1).** The tools run on macOS and Linux. See [compatibility](#compatibility) for the tested interfaces.
 
 ## Quickstart
 
@@ -124,15 +124,6 @@ With the default stereo main output, the mono clip bounced to stereo. The bounce
 description and originator, and the session's audio copy lacked the BWF chunk. Keep the ODS output when you need
 the original mono payload or recording metadata.
 
-## Compatibility
-
-This candidate targets the documented v0.1.0 CLI commands and options and their documented input formats, including
-transition and mix QC cue sheets and Foley sequence and cue-sheet schema 0.1. Scripts can continue to read the
-documented JSON report fields and use the documented exit status conventions. Measurements and findings can change
-when a check is corrected. In mix QC, a dialogue cue with neither audio nor `speech_active` marks edit boundaries,
-and available dialogue stem audio supplies detected speech. The documented Python call signatures and return
-structures are covered by the v0.1.0 tests. Internal helpers can change as the project approaches 1.0.
-
 Optional extras:
 
 | Extra | Pulls in | For |
@@ -140,6 +131,15 @@ Optional extras:
 | `dev` | pytest, hypothesis, pyyaml | the test suite and the skills self-check |
 | `woosh` | torch, torchaudio, torchvision, Pillow | the local generative foley backend (installed from source; weights are **CC-BY-NC 4.0**, see [NOTICE](NOTICE)) |
 | `vision` | pyobjc-framework-Vision (macOS) | Apple Vision scene labels for foley |
+
+## Compatibility
+
+This release supports the documented v0.1.0 CLI commands and options and their documented input formats, including
+transition and mix QC cue sheets and Foley sequence and cue-sheet schema 0.1. Scripts can continue to read the
+documented JSON report fields and use the documented exit status conventions. Measurements and findings can change
+when a check is corrected. In mix QC, a dialogue cue with neither audio nor `speech_active` marks edit boundaries,
+and available dialogue stem audio supplies detected speech. The documented Python call signatures and return
+structures are covered by the v0.1.0 tests. Internal helpers can change as the project approaches 1.0.
 
 ## Command line
 
