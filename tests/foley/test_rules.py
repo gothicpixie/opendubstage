@@ -135,6 +135,15 @@ def test_designed_silence_is_total(analyzer):
     assert check(sheet, seq) == []
 
 
+def test_bed_end_rounding_does_not_cross_into_silence(analyzer):
+    seq = Sequence(stills=[mk_still(0, "cars on a highway", 0.03, dur=2.0)],
+                   silences=[Interval(0.29, 1.0)])
+    sheet = plan(seq, analyze_all(seq, analyzer))
+
+    assert sheet.by_layer(Layer.BED)[0].end <= 0.29
+    assert check(sheet, seq) == []
+
+
 def test_beds_crossfade_between_chapters(analyzer):
     stills = [mk_still(0, "a pine forest", 0.0, 20.0, chapter="one"),
               mk_still(1, "a busy city street", 20.0, 20.0, chapter="two")]

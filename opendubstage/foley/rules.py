@@ -131,6 +131,14 @@ def _subtract(span: Interval, holes: list[Interval]) -> list[Interval]:
     return [p for p in parts if p.dur > 1e-6]
 
 
+def _bounded_duration(start: float, end: float) -> float:
+    """Keep a cue's reconstructed end within its original interval."""
+    duration = end - start
+    while start + duration > end:
+        duration = math.nextafter(duration, 0.0)
+    return duration
+
+
 class _VariantPool:
     """Rotate variants so the same sample never repeats inside the window."""
 
@@ -176,10 +184,11 @@ def plan(seq: Sequence, analyses: dict[str, SceneAnalysis], rules: Rules | None 
         xf = r.bed_crossfade_s if i > 0 else 0.0
         span = Interval(max(0.0, run[0].start - xf), run[-1].end)
         for part in _subtract(span, list(seq.silences)):
-            sheet.cues.append(Cue(nid("b"), Layer.BED, bed, part.start, part.dur,
+            duration = _bounded_duration(part.start, part.end)
+            sheet.cues.append(Cue(nid("b"), Layer.BED, bed, part.start, duration,
                                   target_lufs(Layer.BED, seq.dialogue_lufs),
-                                  fade_in=min(r.bed_crossfade_s, part.dur / 2),
-                                  fade_out=min(r.bed_crossfade_s if i < len(runs) - 1 else 2.0, part.dur / 2),
+                                  fade_in=min(r.bed_crossfade_s, duration / 2),
+                                  fade_out=min(r.bed_crossfade_s if i < len(runs) - 1 else 2.0, duration / 2),
                                   prompt=bed_prompt(bed, tod), room=ROOM_FOR_BED.get(bed)))
 
     # 2. transitions: hand-requested only, <= N per chapter run, straddling the cut
@@ -238,9 +247,7 @@ def plan(seq: Sequence, analyses: dict[str, SceneAnalysis], rules: Rules | None 
                 sheet.decisions.append(Decision(s.id, cand.sound_class, False, "all variants used in repeat window"))
                 continue
             pool.use(cand.sound_class, v, at)
-            dur = end - at
-            while at + dur > end:   # float rounding must not push the texture's end past a block's start
-                dur = math.nextafter(dur, 0.0)
+            dur = _bounded_duration(at, end)
             sheet.cues.append(Cue(nid("t"), Layer.TEXTURE, cand.sound_class, at, dur,
                                   target_lufs(Layer.TEXTURE, seq.dialogue_lufs),
                                   fade_in=r.texture_fade_s, fade_out=r.texture_fade_s,
