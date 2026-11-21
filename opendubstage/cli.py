@@ -18,6 +18,7 @@ TOOLS = {
     "carve": ("opendubstage.mix.carve", "speech-keyed 1-4 kHz dynamic carve of a music stem"),
     "transitions": ("opendubstage.mix.transitions", "J/L-cut pre-laps, tails, crossfades on a cue sheet"),
     "qc": ("opendubstage.qc.mixqc", "public-radio mix QC (loudness, LRA, true peak, dead air, jumps, tonal)"),
+    "soundcraft": ("opendubstage.soundcraft", "verify a mono Broadcast WAV round-trip through SoundCraft"),
     "foley": ("opendubstage.foley.cli", "sound for stills: analyze / plan / check / generate / render"),
 }
 
