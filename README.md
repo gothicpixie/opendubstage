@@ -22,7 +22,7 @@ delivery spec, a standard or a measurement, and every behaviour is pinned by a s
 Each tool is a small Python module that you can read in one sitting. The audio cores need only numpy, scipy and
 soundfile. Model-based backends are optional extras, and the test suite never downloads a model.
 
-> **Status: alpha (0.1.0.dev0).** Every tool runs and is tested on synthetic signals. Interfaces may still change before 1.0.
+> **Status: alpha (0.1.0a1).** Every tool runs and is tested on synthetic signals. Interfaces may still change before 1.0.
 
 ## Quickstart
 
@@ -40,6 +40,7 @@ opendubstage qc mix.wav --md qc.md           # loudness, true peak, LRA, dead ai
 |---|---|---|
 | Spectral repair | Fill coughs, thumps and handling noise with the recording's own room tone; attenuate events under speech | `opendubstage specrepair` |
 | De-rumble | Take car rumble and room boom out of a voice memo without touching the voice above 400 Hz | `opendubstage memofix` |
+| Dialogue denoise | Reduce background noise on an isolated dialogue track with optional DeepFilterNet 3 | `opendubstage denoise` |
 | Dialogue EQ match | Match one voice's long-term spectrum to another's with a gain-limited EQ, emitted as an `ffmpeg` filter chain | `opendubstage ltasmatch` |
 | Music carve | Dip the music's 1–4 kHz band while someone speaks; bring music up in the gaps (posts); end cues on a phrase | `opendubstage carve` |
 | Transitions | J-cuts, L-cuts and equal-power crossfades at chapter boundaries, on a cue sheet, without moving sync | `opendubstage transitions` |
@@ -89,7 +90,25 @@ uv venv .venv --python 3.12 && uv pip install --python .venv/bin/python -e ".[de
 ```
 
 `ffmpeg` and `ffprobe` on `PATH` are needed for some paths: decoding non-WAV input in `ltasmatch`, source-length
-probing in `transitions`, and rendering in `foley`. The rest is pure Python.
+probing in `transitions`, and rendering in `foley`. `denoise` uses a separate executable.
+
+For 24-bit dialogue, build the optional DeepFilterNet executable with floating-point WAV output. This requires Git
+and a Rust toolchain with Cargo. The build uses pinned [DeepFilterNet v0.5.6](https://github.com/Rikorose/DeepFilterNet/releases/tag/v0.5.6)
+source and embeds its model. Denoising runs locally after installation.
+
+```bash
+./scripts/install_deepfilternet.sh .venv/bin
+.venv/bin/opendubstage denoise interview.wav cleaned.wav --deep-filter-bin .venv/bin/deep-filter-f32
+```
+
+ODS looks for `deep-filter-f32` first on `PATH`. The stock release binary, named `deep-filter`, works for 16-bit
+and lower output. ODS rejects its 16-bit intermediate for 24-bit output. With the float build, the samples stay
+in floating point through denoising and any resampling, then are written as 24-bit PCM. ODS keeps the source
+sample rate, channel count, and exact frame count, and compensates for model latency. For RIFF/WAVE and RF64 inputs, it preserves
+Broadcast WAV start timecode and origin metadata, iXML/aXML recording tags, RIFF INFO, cue markers and labels,
+and WAVEFORMATEXTENSIBLE speaker assignments. The copied XML retains source recording values.
+Loudness fields in the `bext` chunk are marked unmeasured, and source peak envelopes and audio checksums are omitted
+because they describe the original audio.
 
 Optional extras:
 
@@ -106,6 +125,7 @@ opendubstage <tool> [args...]          # opendubstage --help lists the tools
 
 opendubstage specrepair in.wav out.wav --events events.json --protected words.json --thumps --report rep.json
 opendubstage memofix memo.wav memo_fixed.wav --words words.json --strength 0.6
+opendubstage denoise interview.wav cleaned.wav --backend deepfilternet3
 opendubstage ltasmatch reference_voice.wav other_voice.wav --gmax 6 --protect-below 160
 opendubstage carve music.wav dialogue.wav music_carved.wav --cut-db -6
 opendubstage transitions cues.json chapters.json cues_out.json --probe-cache durations.json

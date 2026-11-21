@@ -8,6 +8,7 @@ plus objective checks, never by a metric alone.
 
 - [x] `restore.specrepair`: room-tone Replace, spectral Attenuate and LF thump removal, bit-exact outside the patched regions.
 - [x] `restore.memofix`: gap-learned LF rumble subtraction plus a clamped LTASS matching EQ.
+- [x] `restore.denoise`: optional DeepFilterNet 3 dialogue denoising with 24-bit precision and Broadcast WAV metadata.
 - [x] `match.ltasmatch`: an LTAS dialogue EQ match that writes `ffmpeg` filter strings, an early-reflections room, and a pitch probe.
 - [x] `mix.carve`: speech-keyed 1–4 kHz carve, music posts and phrase-safe outs.
 - [x] `mix.transitions`: J/L-cuts, tails and crossfades on a documented cue-sheet schema.
@@ -38,7 +39,6 @@ Generate arbitrary lengths of a recording's own room tone, for fills longer than
 A light, classical (non-neural) de-reverb for interview audio recorded in live rooms:
 - Late-reverb spectral subtraction with a decay model fitted from word offsets (re-using `ltasmatch.decay_ratio_db`),
   limited in depth so the room is reduced, not removed.
-- An optional neural backend behind an extra, never in the default install or in CI.
 - Tests: on synthetic speech convolved with an exponential-decay impulse response, the decay ratio improves by at least
   a set amount while direct-path energy stays within ±1 dB.
 

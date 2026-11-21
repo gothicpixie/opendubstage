@@ -13,10 +13,10 @@ third-party source code is bundled.
 Model weights and optional backends
 -----------------------------------
 This repository does not bundle any model weights, datasets, or third-party
-source code. Optional backends download and run third-party software and
-weights that carry their own licences, which are NOT Apache-2.0 and are
-frequently non-commercial:
+source code. Optional backends use third-party software and weights under
+their respective licences:
 
+- DeepFilterNet 3: upstream code and weights are dual-licensed MIT / Apache-2.0.
 - Woosh (Sony AI): code MIT / Apache-2.0; weights CC-BY-NC 4.0.
 - Synchformer weights (downloaded by Woosh from hkchengrex/MMAudio): CC-BY-NC 4.0.
 - roberta-large tokenizer/config (Hugging Face): MIT.
