@@ -13,6 +13,7 @@ from . import __version__
 TOOLS = {
     "specrepair": ("opendubstage.restore.specrepair", "spectral repair: room-tone replace, attenuate, LF thumps"),
     "memofix": ("opendubstage.restore.memofix", "remove car/room rumble learned from word gaps, LTASS matching EQ"),
+    "denoise": ("opendubstage.restore.denoise", "speech noise reduction with optional DeepFilterNet 3"),
     "ltasmatch": ("opendubstage.match.ltasmatch", "dialogue EQ match: fit an ffmpeg equalizer chain from LTAS"),
     "carve": ("opendubstage.mix.carve", "speech-keyed 1-4 kHz dynamic carve of a music stem"),
     "transitions": ("opendubstage.mix.transitions", "J/L-cut pre-laps, tails, crossfades on a cue sheet"),

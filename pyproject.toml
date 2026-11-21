@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "opendubstage"
-version = "0.1.0.dev0"
+version = "0.1.0a1"
 description = "Open-source documentary and film sound post-production tools: spectral repair, dialogue EQ match, music carve, transitions, mix QC and restrained foley for stills."
 readme = "README.md"
 requires-python = ">=3.10"
