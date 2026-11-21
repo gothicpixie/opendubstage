@@ -110,6 +110,28 @@ class TestSdQc(unittest.TestCase):
         _, probs, checks = run(lambda fx: base(fx, mus=music(DUR, band_noise=0.03)))
         self.assertEqual(checks, {"masking"}, probs)
 
+    def test_unannotated_cue_does_not_mark_dialogue_stem_room_tone_as_speech(self):
+        with tempfile.TemporaryDirectory() as d:
+            fx = Fixture(d)
+            dialogue = np.zeros(int(DUR * SR))
+            dialogue[2 * SR:12 * SR] = speech(10, 1)
+            room_tone = music(8, amp=0, band_noise=0.0002, fo=0)
+            dialogue[12 * SR:20 * SR] = room_tone
+            background = music(DUR)
+            background[12 * SR:20 * SR] += music(8, amp=0, band_noise=0.02, fo=0)
+            fx.mix = dialogue + background
+            fx.cues.append({"id": "edit", "role": "dialogue", "start": 2, "end": 20,
+                            "fade_in": 0.1, "fade_out": 0.1})
+            mix, cues = fx.write()
+            stems = {"dialogue": fx.d / "dx.wav", "background": fx.d / "bg.wav"}
+            sf.write(stems["dialogue"], dialogue, SR, subtype="FLOAT")
+            sf.write(stems["background"], background, SR, subtype="FLOAT")
+
+            met, probs = sd_qc.qc(mix, cues, stems=stems, thresholds=T, log=None)
+
+            self.assertEqual(met["masking_mode"], "stems")
+            self.assertEqual(met["counts"]["masking"], 0, probs)
+
     def test_click_at_edit(self):
         def edit(m): m[int(12.5 * SR)] += 0.3
         _, probs, checks = run(lambda fx: base(fx, b_fade=0.0), edit=edit)     # a HARD edit (no fade) that clicks

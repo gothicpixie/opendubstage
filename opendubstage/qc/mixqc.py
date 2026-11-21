@@ -18,12 +18,16 @@ Cue-sheet format (all times in seconds on the programme timeline)::
                "file": "cue.wav",                 # optional: the rendered cue, sample 0 at `start`
                "file_offset": 0.0,                # optional: seconds into `file` that sit at `start`
                "gain_env": "duck",                # optional: name of an envelope applied to this cue in the mix
-               "speech_active": [[12.4, 18.0]],   # optional: speech intervals (dialogue); derived from `file` if absent
+               "speech_active": [[12.4, 18.0]],   # optional: speech intervals (dialogue); [] marks no speech
                "natural_end": false}],            # optional: the material ends by itself (no fade needed)
      "envelopes": {"duck": {"rate": 100, "values": [...] | "path": "duck.npy", "db": false}},  # linear gain per frame
      "stems": {"dialogue": "dx.wav", "background": "bg.wav"},   # optional, aligned with the mix
      "segments": [{"start": 0, "end": 600, "type": "narrated"}],  # optional; default: dialogue cue spans per class
      "scenes": [0.0, 600.0]}                       # optional scene/chapter boundaries (level jumps there are allowed)
+
+For masking, QC infers speech activity from dialogue cue audio and aligned dialogue stems. A dialogue cue
+without audio or ``speech_active`` supplies edit boundaries only. Add timeline word intervals as ``speech_active``
+to describe where someone speaks, and supply dialogue and background audio to measure masking.
 
 Checks (thresholds and their sources are on `Thresholds`)
 -----------------------------------------------------------
@@ -280,7 +284,7 @@ def analyse(mix, sheet, th, block_s=60.0, log=None):
 
 
 def speech_mask(sheet, nf, sr_unused=None):
-    """10 ms speech-active frames per dialogue class (from speech_active, else the cue file, else the cue span)."""
+    """10 ms speech-active frames per class from explicit intervals or available dialogue audio."""
     out = {}
     for c in sheet["cues"]:
         if c.get("role") != "dialogue": continue
@@ -291,7 +295,7 @@ def speech_mask(sheet, nf, sr_unused=None):
             off = int(round(c.get("file_offset", 0.0) * sr)); a = activity(y[off:].mean(1), sr)
             i0 = int(round(c["start"] * FR)); seg = a[:max(0, min(len(a), nf - i0))]
             m[i0:i0 + len(seg)] |= seg; continue
-        for a, b in (iv if iv is not None else [(c["start"], c["end"])]):
+        for a, b in iv or ():
             m[max(0, int(a * FR)):max(0, min(nf, int(math.ceil(b * FR))))] = True
     return out
 
@@ -486,8 +490,11 @@ def summary_md(met, probs, title="Mix QC"):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="opendubstage qc", description="Public-radio mix QC")
-    ap.add_argument("mix"); ap.add_argument("--cues"); ap.add_argument("--stem", action="append", default=[],
-                                                                        help="role=path, e.g. dialogue=dx.wav")
+    ap.add_argument("mix")
+    ap.add_argument("--cues", help="cue-sheet JSON. For masking, dialogue without speech_active uses cue audio or "
+                                  "an aligned dialogue stem. Cue boundaries alone do not mark speech. Supply "
+                                  "speech_active as timeline word intervals to mark speech explicitly.")
+    ap.add_argument("--stem", action="append", default=[], help="role=path, e.g. dialogue=dx.wav")
     ap.add_argument("--thresholds"); ap.add_argument("--json"); ap.add_argument("--md")
     a = ap.parse_args(argv)
     th = Thresholds.from_dict(json.loads(Path(a.thresholds).read_text())) if a.thresholds else Thresholds()
