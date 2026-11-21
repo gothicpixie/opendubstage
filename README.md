@@ -22,7 +22,7 @@ delivery spec, a standard or a measurement, and every behaviour is pinned by a s
 Each tool is a small Python module that you can read in one sitting. The audio cores need only numpy, scipy and
 soundfile. Model-based backends are optional extras, and the test suite never downloads a model.
 
-> **Version 0.1.0.** The tools run on macOS and Linux. Interfaces may evolve before 1.0.
+> **Early preview (0.1.0).** The tools run on macOS and Linux. Interfaces may evolve before 1.0.
 
 ## Quickstart
 
