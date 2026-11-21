@@ -124,6 +124,23 @@ With the default stereo main output, the mono clip bounced to stereo. The bounce
 description and originator, and the session's audio copy lacked the BWF chunk. Keep the ODS output when you need
 the original mono payload or recording metadata.
 
+For a full, unedited mono 24-bit RIFF BWF or RF64 clip, use the companion command with
+[`soundcraft-cli` 0.20.1](https://github.com/storytold/soundcraft/releases/tag/v0.20.1) on `PATH`.
+Use `--soundcraft-bin /path/to/soundcraft-cli` on either command if needed.
+
+```sh
+opendubstage soundcraft prepare cleaned.wav dialogue-roundtrip
+opendubstage soundcraft export dialogue-roundtrip returned.wav
+```
+
+`prepare` creates a new directory and places the clip at its original BWF sample position in
+`dialogue-roundtrip/dialogue.scraft`. Open that project in SoundCraft to review the clip. Keep the project,
+its `Audio Files` directory, and the `reference.wav` and `reference.sha256` files together. `export` reopens the
+saved session, verifies the clip’s position, format and samples against the saved reference, and delivers a
+byte-for-byte copy of the reference. This preserves the original BWF timecode, metadata chunks and mono
+layout. Use a new output filename. The command rejects moved, trimmed, or sample-altered clips and projects
+with additional tracks or clips.
+
 Optional extras:
 
 | Extra | Pulls in | For |
