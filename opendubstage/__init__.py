@@ -11,4 +11,4 @@ foley     restrained, rule-based sound placement for stills and archival footage
 The audio cores need only numpy, scipy and soundfile; ``foley`` is stdlib-only. Heavy model backends are optional
 extras and are never imported unless asked for.
 """
-__version__ = "0.1.0"
+__version__ = "0.1.1rc1"

@@ -22,7 +22,7 @@ delivery spec, a standard or a measurement, and every behaviour is pinned by a s
 Each tool is a small Python module that you can read in one sitting. The audio cores need only numpy, scipy and
 soundfile. Model-based backends are optional extras, and the test suite never downloads a model.
 
-> **Early preview (0.1.0).** The tools run on macOS and Linux. Interfaces may evolve before 1.0.
+> **Release candidate (0.1.1rc1).** The tools run on macOS and Linux. See [compatibility](#compatibility) for the tested interfaces.
 
 ## Quickstart
 
@@ -109,6 +109,29 @@ Broadcast WAV start timecode and origin metadata, iXML/aXML recording tags, RIFF
 and WAVEFORMATEXTENSIBLE speaker assignments. The copied XML retains source recording values.
 Loudness fields in the `bext` chunk are marked unmeasured, and source peak envelopes and audio checksums are omitted
 because they describe the original audio.
+
+DeepFilterNet is optional. In blind, level-matched comparisons in both playback orders, Gemini Neon preferred the
+original dialogue in a noisy press scrum and a quieter interview. It reported uneven ambience or suppression around
+quiet speech. Compare the cleaned track with the original in context, especially at soft word onsets and in room tone.
+Keep the source Broadcast WAV available for replacement.
+
+### SoundCraft interchange
+
+In SoundCraft 0.20.1, the tested import read the 24-bit audio but placed the clips at timeline zero. Place raw and
+cleaned clips using the source BWF time reference divided by the sample rate. For example, 864,000 samples at
+48 kHz is 18 seconds. A 24-bit WAV stem bounce from that position kept the frame count and time reference.
+With the default stereo main output, the mono clip bounced to stereo. The bounce omitted the original BWF
+description and originator, and the session's audio copy lacked the BWF chunk. Keep the ODS output when you need
+the original mono payload or recording metadata.
+
+## Compatibility
+
+This candidate targets the documented v0.1.0 CLI commands and options and their documented input formats, including
+transition and mix QC cue sheets and Foley sequence and cue-sheet schema 0.1. Scripts can continue to read the
+documented JSON report fields and use the documented exit status conventions. Measurements and findings can change
+when a check is corrected. In mix QC, a dialogue cue with neither audio nor `speech_active` marks edit boundaries,
+and available dialogue stem audio supplies detected speech. The documented Python call signatures and return
+structures are covered by the v0.1.0 tests. Internal helpers can change as the project approaches 1.0.
 
 Optional extras:
 
