@@ -1,15 +1,21 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
+import shutil
 
+import numpy as np
 import pytest
+import soundfile as sf
 
+from opendubstage.foley.analysis import KeywordAnalyzer
 from opendubstage.foley.analysis_vision import VisionAnalyzer, VisionResult, labels_to_text
 from opendubstage.foley.backends import SoundRequest, get_backend
 from opendubstage.foley.cli import main
-from opendubstage.foley.model import Still
-from opendubstage.foley.render import stem_command
+from opendubstage.foley.model import Interval, Layer, Sequence, Still
+from opendubstage.foley.render import render_stems, stem_command
+from opendubstage.foley.rules import check, plan
 
 EXAMPLE = Path(__file__).resolve().parents[2] / "examples" / "foley" / "public_domain" / "sequence.json"
 
@@ -71,6 +77,28 @@ def test_stem_command_delays_each_input():
     graph = cmd[cmd.index("-filter_complex") + 1]
     assert "adelay=1500|1500" in graph and "adelay=10000|10000" in graph
     assert "amix=inputs=3:normalize=0" in graph
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg not installed")
+@pytest.mark.parametrize("silence", [Interval(0.2, 0.9904), Interval(0.5016, 0.75)],
+                         ids=["start-rounds-back", "end-rounds-forward"])
+def test_rendered_bed_stays_outside_fractional_silence(tmp_path, silence):
+    still = Still(id="road", start=0, dur=1, caption="cars on a highway")
+    seq = Sequence(stills=[still], silences=[silence])
+    sheet = plan(seq, {still.id: KeywordAnalyzer().analyze(still)})
+    assert check(sheet, seq) == []
+    source = tmp_path / "tone.wav"
+    rate = 48000
+    sf.write(source, 0.3 * np.sin(2 * np.pi * 440 * np.arange(rate) / rate), rate)
+    for cue in sheet.by_layer(Layer.BED):
+        cue.src = str(source)
+
+    stem = render_stems(sheet, tmp_path / "stems")[Layer.BED.value]
+    audio, sample_rate = sf.read(stem, dtype="int16")
+    assert sample_rate == rate
+    start, end = math.ceil(silence.start * rate), math.ceil(silence.end * rate)
+    assert np.any(audio[:start]) and np.any(audio[end:])
+    assert not np.any(audio[start:end])
 
 
 # ---------------------------------------------------------------- CLI round trip on the public-domain example

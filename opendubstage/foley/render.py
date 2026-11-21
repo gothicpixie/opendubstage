@@ -1,6 +1,7 @@
 """Render a cue sheet with sources into per-layer stems (bed, texture, spot, transition) with ffmpeg."""
 from __future__ import annotations
 
+import math
 import subprocess
 from pathlib import Path
 
@@ -29,15 +30,25 @@ def render_stems(sheet: CueSheet, out_dir: Path, work: Path | None = None) -> di
     work = work or out_dir / "_cues"
     stems: dict[str, Path] = {}
     for layer in Layer:
-        cues = [c for c in sheet.by_layer(layer) if c.src]
-        if not cues:
-            continue
         processed = []
-        for c in cues:
-            p = render_file(c.src, work / f"{c.id}.wav", c.target_lufs, c.dur,
+        for c in sheet.by_layer(layer):
+            if not c.src:
+                continue
+            at, dur = c.at, c.dur
+            if layer is Layer.BED:
+                # The FFmpeg trim and delay use milliseconds. Round both edges
+                # inward so the rendered bed stays inside the checked cue.
+                start_ms = max(0, math.ceil(c.at * 1000))
+                end_ms = math.floor(c.end * 1000)
+                if end_ms <= start_ms:
+                    continue
+                at, dur = start_ms / 1000, (end_ms - start_ms) / 1000
+            p = render_file(c.src, work / f"{c.id}.wav", c.target_lufs, dur,
                             room=c.room if layer is not Layer.BED else None,
                             fade_in=c.fade_in, fade_out=c.fade_out, loop=layer in (Layer.BED, Layer.TEXTURE))
-            processed.append((p, c.at))
+            processed.append((p, at))
+        if not processed:
+            continue
         dst = out_dir / f"{layer.value}.wav"
         subprocess.run(stem_command(processed, dst, sheet.duration), check=True)
         stems[layer.value] = dst
