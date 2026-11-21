@@ -267,14 +267,19 @@ def plan(seq: Sequence, analyses: dict[str, SceneAnalysis], rules: Rules | None 
         cands = sorted((c for c in a.candidates if c.layer is Layer.SPOT), key=lambda c: -c.confidence)
         if not cands:
             continue
+        # The renderer uses milliseconds. Round the cut guards inward and use
+        # the final cue values for every placement check and the variant window.
+        first_ms = math.ceil((s.start + r.min_from_cut_s) * 1000)
+        last_ms = math.floor((s.end - r.end_before_cut_s) * 1000)
         rng = _rng(seq.seed, s.id)
         placed = False
         last_reason = ""
         for cand in cands[:3]:
             for at in (s.start + r.spot_offset_s + rng.uniform(-r.spot_jitter_s, r.spot_jitter_s),
                        s.start + s.dur * 0.5):
-                at = max(at, s.start + r.min_from_cut_s)
-                dur = min(cand.dur, s.end - r.end_before_cut_s - at)
+                at_ms = max(round(at * 1000), first_ms)
+                dur_ms = min(round(cand.dur * 1000), last_ms - at_ms)
+                at, dur = at_ms / 1000, dur_ms / 1000
                 reason = _spot_reject(seq, r, blocks, spots + transitions, cand.sound_class, at, dur)
                 if reason:
                     last_reason = reason
@@ -284,7 +289,7 @@ def plan(seq: Sequence, analyses: dict[str, SceneAnalysis], rules: Rules | None 
                     last_reason = "all variants used in repeat window"
                     continue
                 pool.use(cand.sound_class, v, at)
-                spots.append(Cue(nid("s"), Layer.SPOT, cand.sound_class, round(at, 3), round(dur, 3),
+                spots.append(Cue(nid("s"), Layer.SPOT, cand.sound_class, at, dur,
                                  target_lufs(Layer.SPOT, seq.dialogue_lufs, hero=s.hero),
                                  fade_in=r.spot_fade_in_s, fade_out=min(r.spot_fade_out_s, dur / 2),
                                  still_id=s.id, prompt=cand.prompt, variant=v, room=room_of(s, a)))

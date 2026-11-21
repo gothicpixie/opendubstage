@@ -1,6 +1,8 @@
 """Example-based tests: one test per documentary rule."""
 from __future__ import annotations
 
+import pytest
+
 from foley_helpers import analyze_all, mk_still
 
 from opendubstage.foley.model import Interval, Layer, MusicSegment, NarrationSegment, Sequence
@@ -142,6 +144,22 @@ def test_bed_end_rounding_does_not_cross_into_silence(analyzer):
 
     assert sheet.by_layer(Layer.BED)[0].end <= 0.29
     assert check(sheet, seq) == []
+
+
+@pytest.mark.parametrize(("start", "duration", "silence"), [
+    (0.0004, 10.0, Interval(0.3, 0.8002)),
+    (0.0, 1.8996, Interval(1.7998, 1.8996)),
+], ids=["start-rounds-back", "duration-rounds-up"])
+def test_spot_rounding_keeps_millisecond_cues_outside_silence(analyzer, start, duration, silence):
+    seq = Sequence(stills=[mk_still(0, "cars on a highway", start, duration)], silences=[silence])
+    rules = Rules(spot_jitter_s=0.0)
+    sheet = plan(seq, analyze_all(seq, analyzer), rules)
+
+    [spot] = spots(sheet)
+    assert spot.at == round(spot.at, 3)
+    assert spot.dur == round(spot.dur, 3)
+    assert not silence.overlaps(spot.at, spot.end)
+    assert check(sheet, seq, rules) == []
 
 
 def test_beds_crossfade_between_chapters(analyzer):

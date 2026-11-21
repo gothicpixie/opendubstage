@@ -7,8 +7,7 @@ authors:
 repository-code: "https://github.com/gothicpixie/opendubstage"
 url: "https://github.com/gothicpixie/opendubstage"
 license: Apache-2.0
-version: 0.1.0a1
-date-released: "2026-11-20"
+version: 0.1.0
 keywords:
   - audio post-production
   - documentary sound
